@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>자치회의 진행판</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -245,6 +246,28 @@ textarea.inp{resize:vertical;min-height:5.5em;line-height:1.7}
 .draw-go{background:var(--mid-b);color:#14332A;border-color:var(--mid-b);font-weight:700}
 .draw-go:hover{background:var(--mid-b);filter:brightness(1.08)}
 
+/* 생활 목표 표결 */
+.gvotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5em,1fr));gap:.45em}
+.gv{position:relative;border:1px solid var(--board-line);border-top:4px solid var(--board-line);
+  border-radius:12px;padding:.5em .45em;background:rgba(0,0,0,.18);
+  display:flex;flex-direction:column;gap:.2em;align-items:center;text-align:center}
+.gv.lead{border-top-color:var(--good-b);background:rgba(87,192,138,.13)}
+.gv-t{font-size:1.05em;font-weight:600;line-height:1.3;color:var(--chalk);word-break:keep-all}
+.gv-n{font-size:2.3em;font-weight:600;line-height:1;color:var(--chalk);font-variant-numeric:tabular-nums}
+.gv.lead .gv-n{color:var(--good-b)}
+.gv-pm{display:flex;gap:.3rem}
+.gv-pm button{width:2.4rem;height:2.1rem;font-size:1.1rem;line-height:1;border-radius:8px;
+  border:1px solid var(--board-line);background:rgba(255,255,255,.08);color:var(--chalk);cursor:pointer}
+.gv-pm button:hover{background:rgba(255,255,255,.18)}
+.gv-key{font-family:var(--mono);font-size:.62rem;color:var(--chalk-3)}
+.gv-x{position:absolute;top:.15rem;right:.3rem;background:none;border:0;color:var(--chalk-3);
+  cursor:pointer;font-size:1rem;line-height:1;padding:.1rem .25rem}
+.gv-x:hover{color:var(--bad-b)}
+.gv-foot{display:flex;align-items:center;justify-content:space-between;gap:.6em;flex-wrap:wrap;
+  font-size:.95em;color:var(--chalk-2);margin-top:.45em}
+.gv-tie{color:var(--mid-b);font-size:.9em}
+.chips.bank{max-height:5.2em;overflow-y:auto;scrollbar-width:thin}
+
 /* 번호 뽑기 */
 .drawwrap{position:absolute;inset:0;z-index:20;display:grid;place-items:center;
   padding:2rem;background:rgba(16,40,32,.95)}
@@ -420,6 +443,8 @@ function load(){
   try{
     const raw=localStorage.getItem(KEY);
     if(raw){db=JSON.parse(raw); db.settings=Object.assign({},DEFAULTS.settings,db.settings);
+      /* 표결 기능 이전에 만든 회의에도 빈 후보 목록을 달아 준다 */
+      (db.meetings||[]).forEach(mm=>{ if(!Array.isArray(mm.goalVote)) mm.goalVote=[]; });
       db.meetings=db.meetings||[]; return;}
   }catch(e){}
   db=JSON.parse(JSON.stringify(DEFAULTS));
@@ -712,7 +737,7 @@ function viewRun(){
 
 function stepFilled(m,id){
   if(id==="review") return (m.review.good+m.review.mid+m.review.bad)>0;
-  if(id==="goal") return !!m.next.topic;
+  if(id==="goal") return !!m.next.topic || (m.goalVote||[]).some(c=>c.v>0);
   if(id==="promise") return m.next.promises.length>0;
   if(id==="suggest") return m.suggestions.length>0;
   if(id==="words") return !!m.teacherWords.trim();
@@ -801,15 +826,31 @@ function slide(m,id){
     </div>`;
   }
 
-  case "goal": return `
+  case "goal": {
+    /* 후보가 모이면 주제 목록을 접어, 표가 한 화면에 들어오게 한다 */
+    const gv=m.goalVote||[], openAdd=gv.length<2||state.goalAdd;
+    return `
     <div class="eyebrow">05</div><h2>다음달 생활 목표</h2>
-    <input class="b-inp" data-bind="next.topic" value="${esc(m.next.topic)}"
-      placeholder="다음 달 회의주제를 적어 주세요" style="font-family:var(--display);font-weight:600">
-    <div>
-      <div class="eyebrow" style="letter-spacing:.14em;font-size:.72rem">자주 쓰는 주제</div>
-      <div class="chips">${s.topicBank.map(t=>
-        `<button class="chip" data-act="pick-topic" data-v="${esc(t)}">${esc(t)}</button>`).join("")}</div>
+    <div id="gvwrap">${goalVoteHTML(m)}</div>
+    ${openAdd?`
+      <div class="addrow">
+        <input class="b-inp" id="add-cand" data-add="cand" placeholder="후보 직접 넣기" style="flex:1">
+        <button class="b-btn" data-act="gv-add">후보 넣기</button>
+        ${gv.length>=2?`<button class="b-btn" data-act="gv-addtoggle">접기</button>`:""}
+      </div>
+      <div>
+        <div class="eyebrow" style="letter-spacing:.14em;font-size:.72em">자주 쓰는 주제 · 눌러서 후보로</div>
+        <div class="chips bank">${s.topicBank.map(t=>
+          `<button class="chip" data-act="gv-addv" data-v="${esc(t)}">${esc(t)}</button>`).join("")}</div>
+      </div>`
+    :`<div><button class="b-btn" data-act="gv-addtoggle">후보 더 넣기</button></div>`}
+    <div class="addrow">
+      <span class="eyebrow" style="font-size:.72em;white-space:nowrap;align-self:center">정해진 목표</span>
+      <input class="b-inp" data-bind="next.topic" value="${esc(m.next.topic)}"
+        placeholder="투표로 정하거나 직접 적어 주세요"
+        style="font-family:var(--display);font-weight:600;flex:1">
     </div>`;
+  }
 
   case "promise": return `
     <div class="eyebrow">06</div><h2>다음달 실천내용 <span style="font-size:.4em;font-weight:400;color:var(--chalk-2)">우리 약속</span></h2>
@@ -859,6 +900,53 @@ function slide(m,id){
   }
   }
   return "";
+}
+
+/* 다음 달 생활 목표 표결 — 후보를 올려 두고 거수로 센다 */
+function goalVoteHTML(m){
+  const gv=m.goalVote||[];
+  if(!gv.length) return `<p class="lead">후보를 넣고 거수로 표를 세어 보세요. 투표 없이 바로 적어도 됩니다.</p>`;
+  const max=Math.max(0,...gv.map(x=>x.v));
+  const tot=gv.reduce((a,b)=>a+b.v,0);
+  const leaders=gv.filter(x=>x.v===max&&max>0);
+  return `<div class="gvotes">${gv.map((c,i)=>`
+      <div class="gv${max>0&&c.v===max?" lead":""}">
+        <button class="gv-x" data-act="gv-rm" data-i="${i}" title="후보 빼기" aria-label="후보 빼기">×</button>
+        <div class="gv-t">${esc(c.t)}</div>
+        <div class="gv-n mono">${c.v}</div>
+        <div class="gv-pm">
+          <button data-act="gv" data-i="${i}" data-d="-1" aria-label="한 표 빼기">−</button>
+          <button data-act="gv" data-i="${i}" data-d="1" aria-label="한 표 더하기">+</button>
+        </div>
+        ${i<9?`<div class="gv-key mono">${i+1}</div>`:""}
+      </div>`).join("")}</div>
+    <div class="gv-foot"><span class="mono">모두 ${tot}표</span>
+      ${leaders.length===1
+        ? `<button class="b-btn draw-go" data-act="gv-pick" data-v="${esc(leaders[0].t)}">이 주제로 정하기</button>`
+        : max>0 ? `<span class="gv-tie">표가 같습니다. 다시 세거나 한 번 더 투표해 주세요</span>` : ""}
+    </div>`;
+}
+
+function addCandidate(t){
+  const m=current(); const v=String(t||"").trim(); if(!v) return;
+  m.goalVote=m.goalVote||[];
+  if(m.goalVote.some(c=>c.t===v)){ toast("이미 올라온 후보입니다"); return; }
+  if(m.goalVote.length>=8){ toast("후보는 8개까지 넣을 수 있습니다"); return; }
+  m.goalVote.push({t:v,v:0}); m.updatedAt=Date.now(); save(); render();
+  const i=$("#add-cand"); if(i){ i.value=""; i.focus(); }
+}
+
+function bumpGoal(i,d){
+  const m=current(); const gv=m.goalVote||[]; if(!gv[i]) return;
+  gv[i].v=Math.max(0,(gv[i].v||0)+d); m.updatedAt=Date.now(); save(); paintGoal();
+}
+
+/* 표를 셀 때마다 화면 전체를 다시 그리면 깜빡이므로 표결 부분만 갈아 끼운다 */
+function paintGoal(){
+  const m=current(), wrap=$("#gvwrap");
+  if(wrap) wrap.innerHTML=goalVoteHTML(m);
+  const rail=railBtn("goal");
+  if(rail) rail.classList.toggle("filled",stepFilled(m,"goal"));
 }
 
 /* 번호 뽑기 — 한 번 나온 번호는 다시 안 나오게 해서 골고루 돌아가게 한다 */
@@ -1114,7 +1202,8 @@ function viewSettings(){
           <button class="btn btn-sm" data-act="ts" data-d="1">크게 +</button>
         </div>
         <p style="font-size:.85rem;color:var(--ink-2);margin-top:.7rem">
-          전자칠판에서는 진행 화면 아래쪽 <b>+</b> 단추나 키보드 <b>+ / −</b> 로도 바로 조절할 수 있습니다.</p></div>
+          전자칠판에서는 진행 화면 아래쪽 <b>+</b> 단추나 키보드 <b>+ / −</b> 로도 바로 조절할 수 있습니다.</p>
+        </div>
 
       <div class="set-block"><h3>여는 놀이</h3>
         <label style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;cursor:pointer">
@@ -1183,7 +1272,7 @@ function newMeeting(){
     date:todayISO(), scope:last?last.scope:db.settings.scope,
     chair:"", recorders:"", attendance:last?last.attendance:(db.settings.defaultAttendance||20),
     review:{topic:last?last.next.topic:"", promises:last?last.next.promises.slice():[], good:0,mid:0,bad:0},
-    next:{topic:"", promises:[]}, suggestions:[], teacherWords:"",
+    next:{topic:"", promises:[]}, goalVote:[], suggestions:[], teacherWords:"",
     done:false, updatedAt:Date.now()
   };
   db.meetings.push(m); save();
@@ -1214,6 +1303,9 @@ function bump(k,d){
 }
 
 function addItem(kind){
+  if(kind==="cand"){
+    const inp=$("#add-cand"); addCandidate(inp.value); inp.value=""; inp.focus(); return;
+  }
   if(kind==="topic"){
     const inp=$("#add-topic"), v=inp.value.trim(); if(!v) return;
     db.settings.topicBank.push(v); save(); render();
@@ -1240,7 +1332,7 @@ function refreshList(kind){
 /* 회의를 새로 열 때마다 뽑기와 놀이를 처음 상태로 되돌린다 */
 function startRun(id){
   const qn=(db.settings.questions||[]).length, cn=(db.settings.quiz||[]).length;
-  Object.assign(state,{drawOpen:false, drawUsed:[], drawn:null,
+  Object.assign(state,{drawOpen:false, drawUsed:[], drawn:null, goalAdd:false,
     iceMode:"q", iceShow:false,
     iceQ:qn?Math.floor(Math.random()*qn):0, iceC:cn?Math.floor(Math.random()*cn):0});
   go("run",{id:id||state.id, step:0});
@@ -1313,10 +1405,18 @@ document.addEventListener("click",e=>{
       m.updatedAt=Date.now(); save(); refreshList(k); break;
     }
     case "rm-topic": db.settings.topicBank.splice(+b.dataset.i,1); save(); render(); break;
-    case "pick-topic": {
+    case "gv": bumpGoal(+b.dataset.i, +b.dataset.d); break;
+    case "gv-rm": {
+      (m.goalVote||[]).splice(+b.dataset.i,1); m.updatedAt=Date.now(); save(); paintGoal(); break;
+    }
+    case "gv-addv": addCandidate(b.dataset.v); break;
+    case "gv-add": addCandidate($("#add-cand").value); break;
+    case "gv-addtoggle": state.goalAdd=!state.goalAdd; render(); break;
+    case "gv-pick": {
       m.next.topic=b.dataset.v; m.updatedAt=Date.now(); save();
       const inp=document.querySelector('[data-bind="next.topic"]'); if(inp) inp.value=m.next.topic;
       const rail=railBtn("goal"); if(rail) rail.classList.add("filled");
+      toast(`다음 달 목표를 “${m.next.topic}”(으)로 정했습니다`);
       break;
     }
     case "finish": m.done=true; m.updatedAt=Date.now(); save(); go("record",{id:m.id}); break;
@@ -1428,9 +1528,14 @@ document.addEventListener("keydown",e=>{
   else if((steps()[state.step]||{}).id==="review"&&"123".includes(e.key)){
     e.preventDefault(); bump(["good","mid","bad"][+e.key-1], e.shiftKey?-1:1);
   }
+  else if((steps()[state.step]||{}).id==="goal"&&/^[1-9]$/.test(e.key)){
+    e.preventDefault(); bumpGoal(+e.key-1, e.shiftKey?-1:1);
+  }
 });
 
 load();
 render();
 idbLoadAll().then(()=>{ if(Object.keys(userAudio).length){ audioKey=null; render(); } });
 </script>
+
+</body></html>
