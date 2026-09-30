@@ -225,6 +225,13 @@ textarea.inp{resize:vertical;min-height:5.5em;line-height:1.7}
   font-variant-numeric:tabular-nums}
 .pnote{font-size:.85rem;color:var(--chalk-3)}
 @media (max-width:640px){.pnote.pkey{display:none}}
+/* 자동 재생이 막혀 한 번 눌러야 할 때 — 단추를 두드러지게 */
+.audiobar.is-waiting .ptime{color:var(--mid-b);font-weight:700}
+.audiobar.is-waiting .pbtn{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(235,193,90,.55)}50%{box-shadow:0 0 0 .6rem rgba(235,193,90,0)}}
+@media (prefers-reduced-motion:reduce){.audiobar.is-waiting .pbtn{animation:none;outline:3px solid var(--mid-b)}}
+.audiobar.is-failed .ptime{color:var(--bad-b);font-weight:600}
+.audiobar.is-failed .pbtn{opacity:.4;cursor:not-allowed}
 .arow{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;padding:.7rem 0;
   border-top:1px solid var(--line)}
 .arow:first-of-type{border-top:0}
@@ -232,7 +239,84 @@ textarea.inp{resize:vertical;min-height:5.5em;line-height:1.7}
 .arow .st{font-size:.8rem;color:var(--ink-2)}
 .arow input[type=file]{max-width:15rem;font-size:.82rem}
 /* 여는 놀이 */
-.icetabs{display:flex;gap:.3em}
+.icetabs{display:flex;gap:.3em;flex-wrap:wrap}
+/* 놀이 고르기 판 — 칠판 가득 카드 아홉 장 */
+.ice-sub{margin-top:-.3em}
+.icegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.45em}
+@media (max-width:640px){.icegrid{grid-template-columns:repeat(2,1fr)}}
+.icegame{display:flex;flex-direction:column;align-items:flex-start;gap:.12em;text-align:left;cursor:pointer;
+  background:rgba(255,255,255,.06);border:1px solid var(--board-line);border-radius:14px;padding:.5em .7em;
+  color:var(--chalk);transition:background .15s,transform .15s}
+.icegame:hover{background:rgba(255,255,255,.12);transform:translateY(-2px)}
+.icegame:focus-visible{outline:3px solid var(--mid-b);outline-offset:2px}
+.ig-emo{font-size:1.7em;line-height:1.1}
+.ig-name{font-size:1.1em;font-weight:700;font-family:var(--display)}
+.ig-desc{font-size:.68em;color:var(--chalk-3);line-height:1.35}
+.icehead{display:flex;align-items:center;gap:.6em;flex-wrap:wrap}
+.icehead .b-btn{font-size:1rem}
+.slide h2.iceh2{font-size:2.1em}
+.icecard.big{font-size:2.4em;text-align:center}
+.ice-c{text-align:center;max-width:none}
+.icecenter{display:flex;flex-direction:column;align-items:center;gap:.25em;text-align:center}
+.pop{animation:icepop .32s cubic-bezier(.2,1.5,.5,1)}
+@keyframes icepop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+/* 밸런스 게임 — 두 쪽 색은 좋다·나쁘다로 읽히지 않게 하늘색과 주황 */
+.stage{--bal-a:#6FB7FF;--bal-b:#FFA15C}
+.balwrap{display:grid;grid-template-columns:1fr auto 1fr;gap:.5em;align-items:stretch}
+.balcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25em;text-align:center;
+  background:rgba(0,0,0,.18);border:1px solid var(--board-line);border-radius:14px;padding:.6em .5em;
+  border-top:6px solid var(--bal-a)}
+.balcard.b{border-top-color:var(--bal-b)}
+.balcard.lead.a{background:rgba(111,183,255,.16)} .balcard.lead.b{background:rgba(255,161,92,.16)}
+.baltxt{font-family:var(--display);font-weight:700;font-size:1.7em;line-height:1.25;word-break:keep-all}
+.balnum{font-size:3em;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.balcard.a .balnum{color:var(--bal-a)} .balcard.b .balnum{color:var(--bal-b)}
+.balvs{align-self:center;font-family:var(--display);font-weight:800;font-size:1.4em;color:var(--chalk-3)}
+@media (max-width:640px){.balwrap{grid-template-columns:1fr}.balvs{justify-self:center}}
+/* 가위바위보 */
+.rpsbig{font-size:6.5em;line-height:1.05}
+.rpscount{font-family:var(--display);font-weight:800;font-size:5em;color:var(--mid-b);line-height:1.1}
+.rpsname{font-size:1.7em}
+.rpsname b{color:var(--mid-b)}
+/* OX */
+.oxrow{display:flex;align-items:center;justify-content:center;gap:.5em;flex-wrap:wrap}
+.oxans{font-family:var(--display);font-weight:900;font-size:6em;line-height:1}
+.oxans.o{color:var(--good-b)} .oxans.x{color:var(--bad-b)}
+.oxrow .lead{max-width:24em;text-align:left}
+/* 사라진 그림 찾기 */
+.missgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.4em}
+.misscell{display:flex;flex-direction:column;align-items:center;gap:.05em;padding:.35em .2em;border-radius:12px;
+  background:rgba(255,255,255,.06);border:1px solid var(--board-line)}
+.misscell .e{font-size:2.5em;line-height:1.15}
+.misscell .n{font-size:.8em;color:var(--chalk-2)}
+.misscell.q .e{color:var(--chalk-3);font-family:var(--display);font-weight:800}
+.misscell.hit{background:rgba(235,193,90,.2);border-color:var(--mid-b);box-shadow:0 0 0 2px var(--mid-b)}
+.missleft{font-family:var(--mono);color:var(--mid-b);font-size:1.4em}
+/* 몸으로 말해요 */
+.actword{font-family:var(--display);font-weight:800;font-size:3.8em;line-height:1.15;word-break:keep-all}
+.actrow{display:flex;align-items:center;gap:1.2em}
+.acttime{font-size:2.6em;font-weight:600;color:var(--mid-b);min-width:2ch;text-align:center}
+.actscore{display:flex;flex-direction:column;align-items:center}
+.actscore b{font-size:2em;line-height:1}
+.actscore span{font-size:.7em;color:var(--chalk-3);letter-spacing:.1em}
+.actlist{display:flex;flex-wrap:wrap;gap:.3em;justify-content:center;max-width:40em}
+.actlist span{background:rgba(255,255,255,.08);border:1px solid var(--board-line);border-radius:999px;
+  padding:.15em .6em;font-size:.95em}
+.actlist span.miss{opacity:.5;text-decoration:line-through}
+/* 텔레파시 */
+.telebig{font-family:var(--display);font-weight:800;font-size:5.5em;line-height:1.05;color:var(--mid-b)}
+/* 짝 · 모둠 뽑기 */
+.drawnums{display:flex;align-items:center;justify-content:center;gap:.3em;flex-wrap:wrap}
+.drawplus{font-family:var(--display);font-size:3em;color:var(--chalk-3)}
+.drawnums.names .drawnum{font-size:4.2em}
+.drawbox.wide{max-width:min(62rem,94vw);width:100%}
+.dgk{font-size:1.5em;min-width:1.6em;text-align:center}
+.dgroups{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5em,1fr));gap:.4em;width:100%;text-align:left}
+.dgroup{background:rgba(255,255,255,.07);border:1px solid var(--board-line);border-top:4px solid var(--mid-b);
+  border-radius:12px;padding:.45em .6em}
+.dgroup h4{font-size:.85em;color:var(--mid-b);margin-bottom:.2em}
+.dgroup p{font-size:1.15em;line-height:1.45;word-break:keep-all}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}.icegame{transition:none}}
 .icetab{background:transparent;border:1px solid var(--board-line);color:var(--chalk-3);
   border-radius:999px;padding:.3em 1em;cursor:pointer;font-size:.95em;font-weight:600}
 .icetab:hover{color:var(--chalk-2)}
@@ -245,6 +329,14 @@ textarea.inp{resize:vertical;min-height:5.5em;line-height:1.7}
   color:var(--mid-b);line-height:1.2}
 .draw-go{background:var(--mid-b);color:#14332A;border-color:var(--mid-b);font-weight:700}
 .draw-go:hover{background:var(--mid-b);filter:brightness(1.08)}
+
+/* 실천내용을 정할 때 무엇을 위한 약속인지 늘 보이게 */
+.goalbanner{display:flex;align-items:center;gap:.7em;flex-wrap:wrap;
+  background:rgba(235,193,90,.1);border:1px solid rgba(235,193,90,.35);
+  border-left:4px solid var(--mid-b);border-radius:10px;padding:.4em .8em}
+.gb-lab{font-size:.8em;font-weight:700;color:var(--mid-b);letter-spacing:.06em;white-space:nowrap}
+.gb-t{font-family:var(--display);font-weight:700;font-size:1.55em;color:var(--chalk);line-height:1.25}
+.gb-empty{color:var(--chalk-3);font-size:1.05em}
 
 /* 생활 목표 표결 */
 .gvotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5em,1fr));gap:.45em}
@@ -267,6 +359,46 @@ textarea.inp{resize:vertical;min-height:5.5em;line-height:1.7}
   font-size:.95em;color:var(--chalk-2);margin-top:.45em}
 .gv-tie{color:var(--mid-b);font-size:.9em}
 .chips.bank{max-height:5.2em;overflow-y:auto;scrollbar-width:thin}
+
+/* 패들렛 QR · 가져오기 */
+.grp-sep{width:1px;align-self:stretch;background:var(--board-line);margin:0 .25rem}
+.qrbox{background:#fff;padding:16px;border-radius:14px;line-height:0;
+  box-shadow:0 10px 30px -12px rgba(0,0,0,.6)}
+.qrbox img,.qrbox canvas{display:block}
+.qrurl{font-family:var(--mono);font-size:.7em;color:var(--chalk-3);word-break:break-all;max-width:44ch}
+/* .drawbox 의 좁은 폭(34ch)을 이겨야 하므로 둘을 함께 적는다 */
+.drawbox.impbox{max-width:min(46rem,92vw);width:100%;font-size:1rem}
+.imp-help{font-size:1.05rem;color:var(--chalk-2);line-height:1.55;max-width:40em}
+.imp-auto{font-size:1.2rem;padding:.75em 1.6em}
+.imp-src{font-size:1rem;color:var(--mid-b);font-weight:600}
+.imp-err{font-size:1rem;line-height:1.55;color:var(--chalk);max-width:40em;text-align:left;
+  background:rgba(238,124,156,.12);border:1px solid rgba(238,124,156,.45);border-left:4px solid var(--bad-b);
+  border-radius:9px;padding:.65rem .85rem}
+.imp-alt{width:100%;text-align:left}
+.imp-alt summary{cursor:pointer;color:var(--chalk-3);font-size:.95rem;text-align:center;padding:.3rem;
+  list-style-position:inside}
+.imp-alt summary:hover{color:var(--chalk-2)}
+.imp-alt[open]{display:flex;flex-direction:column;gap:.6rem;align-items:center}
+.imp-alt[open] summary{align-self:stretch}
+.impbox textarea{font-size:1.05rem;min-height:12rem;resize:vertical;line-height:1.5;text-align:left}
+.implist{width:100%;max-height:min(24rem,48vh);overflow-y:auto;text-align:left;
+  display:flex;flex-direction:column;gap:.3rem;padding:.2rem;scrollbar-width:thin}
+.impitem{display:flex;align-items:center;gap:.7rem;padding:.55rem .75rem;border-radius:9px;
+  background:rgba(255,255,255,.06);border:1px solid var(--board-line);cursor:pointer;
+  font-size:1.1rem;color:var(--chalk)}
+.impitem:hover{background:rgba(255,255,255,.1)}
+.impitem input{width:1.2rem;height:1.2rem;flex:0 0 auto;accent-color:var(--mid-b)}
+.impitem span{flex:1}
+.impitem em{font-style:normal;font-size:.78rem;color:var(--chalk-3);white-space:nowrap}
+.impitem.dup{opacity:.6}
+.impitem:has(input:not(:checked)) span{color:var(--chalk-3);text-decoration:line-through}
+.rvnotes{display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));gap:.4em;
+  max-height:52vh;overflow-y:auto;scrollbar-width:thin}
+.rvnote{background:rgba(255,255,255,.06);border:1px solid var(--board-line);border-left:3px solid var(--mid-b);
+  border-radius:10px;padding:.5em .75em;font-size:1.05em;line-height:1.45;color:var(--chalk)}
+.iceans{display:flex;flex-wrap:wrap;gap:.35em}
+.iceans-i{background:rgba(235,193,90,.13);border:1px solid rgba(235,193,90,.35);color:var(--chalk);
+  border-radius:10px;padding:.3em .7em;font-size:1.05em;line-height:1.35}
 
 /* 번호 뽑기 */
 .drawwrap{position:absolute;inset:0;z-index:20;display:grid;place-items:center;
@@ -315,6 +447,29 @@ textarea.inp{resize:vertical;min-height:5.5em;line-height:1.7}
 .set-block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.3rem}
 .set-block h3{font-size:.75rem;letter-spacing:.14em;color:var(--ink-2);font-weight:700;
   margin-bottom:.9rem}
+/* 의견 받는 곳 고르기 — 둘 중 하나 */
+.flabel{display:block;font-size:.8rem;font-weight:600;color:var(--ink-2);margin-bottom:.45rem}
+.seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:.5rem}
+.seg label{display:flex;gap:.6rem;align-items:flex-start;padding:.75rem .85rem;border:1px solid var(--line-2);
+  border-radius:10px;cursor:pointer;background:var(--surface)}
+.seg label:has(input:checked){border-color:var(--board);box-shadow:inset 0 0 0 1px var(--board);background:var(--surface-2)}
+.seg input{margin-top:.2rem;accent-color:var(--board);width:1rem;height:1rem;flex:0 0 auto}
+.seg b{display:block;font-size:.95rem}
+.seg small{display:block;font-size:.78rem;color:var(--ink-2);margin-top:.15rem;line-height:1.45}
+.set-warn{font-size:.85rem;color:var(--bad);margin-top:.5rem}
+.set-guide{margin-top:1rem;font-size:.88rem;color:var(--ink-2);line-height:1.75}
+.set-guide summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.set-guide ol{margin:.6rem 0 0;padding-left:1.2rem}
+.set-guide ul{margin:.2rem 0 .2rem;padding-left:1.1rem}
+.set-guide p{margin-top:.7rem}
+.kwtable{border-collapse:collapse;margin:.5rem 0 .3rem;font-size:.84rem;width:100%;max-width:34rem}
+.kwtable th,.kwtable td{border:1px solid var(--line-2);padding:.3rem .55rem;text-align:left;vertical-align:top}
+.kwtable th{background:var(--surface-2);font-weight:600;color:var(--ink)}
+.set-guide small{display:block;font-size:.8rem;margin-top:.2rem}
+.labelcopy{display:flex;gap:.5rem;align-items:flex-start;margin:.4rem 0 .3rem}
+.labelcopy textarea{font:inherit;font-size:.9rem;line-height:1.6;color:var(--ink);background:var(--surface-2);
+  border:1px solid var(--line-2);border-radius:8px;padding:.35rem .6rem;resize:none;width:9rem}
+.field label small{font-weight:400;color:var(--ink-2)}
 .tbank{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.7rem}
 .tbank .chip2{display:inline-flex;align-items:center;gap:.4rem;background:var(--surface-2);
   border:1px solid var(--line-2);border-radius:999px;padding:.3em .5em .3em .85em;font-size:.88rem}
@@ -406,7 +561,8 @@ const DEFAULT_ANTHEM="동해물과 백두산이 마르고 닳도록\n하느님�
 const DEFAULTS={
   settings:{
     school:"의령초등학교", scope:"학급", room:"", teacher:"", autoplay:true,
-    defaultAttendance:20, setupDone:false,
+    defaultAttendance:20, setupDone:false, padletUrl:"",
+    source:"padlet", gformLink:"", gformSheet:"",
     pledge:DEFAULT_PLEDGE, anthem:DEFAULT_ANTHEM,
     songTitle:"교가", songLyrics:"",
     textScale:1, iceOn:true,
@@ -421,14 +577,79 @@ const DEFAULTS={
       "어른이 되면 해보고 싶은 일은?","최근에 읽은 재미있는 책은?","기분이 좋아지는 나만의 방법은?",
       "우리 반에 하나 생겼으면 하는 것은?","오늘 기분을 색깔로 말하면?","가장 기억에 남는 학교 행사는?",
       "내가 회장이라면 해보고 싶은 일은?","친구에게 듣고 싶은 말은?","오늘 아침에 있었던 일 하나는?",
-      "우리 학교에서 고치고 싶은 것 하나는?","내 짝꿍의 좋은 점은?"],
+      "우리 학교에서 고치고 싶은 것 하나는?","내 짝꿍의 좋은 점은?",
+      /* 아이스브레이킹 놀이상자의 질문 카드 */
+      "내 이름에는 어떤 뜻이 담겨 있나요?","내가 제일 좋아하는 계절과 그 이유는?","내 방에 있는 보물 1호는 무엇인가요?",
+      "요즘 가장 많이 듣는 노래는 무엇인가요?","아침에 일어나서 가장 먼저 하는 일은?",
+      "내 별명이 있다면 무엇이고, 마음에 드나요?","가족과 함께한 날 중 가장 기억에 남는 하루는?",
+      "작년의 나에게 한마디를 한다면?","하루 동안 투명인간이 된다면 무엇을 하고 싶나요?",
+      "타임머신을 탄다면 언제로 가고 싶나요?","동물과 대화할 수 있다면 어떤 동물과 이야기할래요?",
+      "소원 세 가지가 생긴다면 무엇을 빌까요?","무인도에 딱 한 가지만 가져갈 수 있다면?",
+      "초능력 하나를 고른다면 어떤 능력인가요?","내가 하루 동안 교장 선생님이라면 무엇을 바꿀까요?",
+      "우리 반이 통째로 여행을 간다면 어디로 갈까요?","내가 발명가라면 어떤 물건을 만들고 싶나요?",
+      "하루 동안 어른이 된다면 제일 먼저 무엇을 할까요?","내 이름을 딴 가게를 연다면 무엇을 파는 가게일까요?",
+      "올해 우리 반에서 꼭 해 보고 싶은 일 한 가지는?","우리 반 규칙 중 가장 중요하다고 생각하는 것은?",
+      "교실에서 가장 좋아하는 자리나 장소는 어디인가요?","우리 반이 더 좋아지려면 무엇이 필요할까요?",
+      "쉬는 시간에 함께하면 재미있는 놀이는?","올해가 끝날 때 우리 반이 어떤 반이면 좋겠나요?"],
     quiz:["학생자치회의|지금 우리가 하는 것","급식실|점심시간에 가는 곳","운동회|가을에 하는 학교 행사",
       "도서관|책을 빌리는 곳","여름방학|더울 때 시작하는 것","알림장|매일 쓰는 것",
       "실내화|학교 안에서 신는 것","짝꿍|옆자리에 앉은 친구","청소시간|교실을 깨끗이 하는 시간",
       "체육시간|운동장에서 하는 수업","보건실|아플 때 가는 곳","학예회|무대에서 발표하는 행사",
       "졸업식|2월에 하는 행사","시간표|무슨 수업인지 알려 주는 것","준비물|수업에 필요한 것",
       "방과후|수업이 끝난 뒤 하는 활동","운동장|마음껏 뛰어노는 넓은 곳","현장체험학습|버스 타고 가는 활동",
-      "우산|비 오는 날 챙기는 것","칠판|선생님이 글씨 쓰는 곳"]
+      "우산|비 오는 날 챙기는 것","칠판|선생님이 글씨 쓰는 곳",
+      /* 아이스브레이킹 놀이상자의 초성 낱말 — 힌트는 분야 */
+      "강아지|동물","고양이|동물","병아리|동물","코끼리|동물","다람쥐|동물","고슴도치|동물","개구리|동물",
+      "거북이|동물","돌고래|동물","앵무새|동물","기린|동물","너구리|동물",
+      "김치찌개|음식","떡볶이|음식","불고기|음식","비빔밥|음식","미역국|음식","계란말이|음식","짜장면|음식",
+      "팥빙수|음식","삼각김밥|음식","된장찌개|음식","순두부|음식","호떡|음식",
+      "체육관|학교","사물함|학교",
+      "지우개|물건","자전거|물건","냉장고|물건","세탁기|물건","청소기|물건","목도리|물건","손전등|물건",
+      "돋보기|물건","줄넘기|물건","연필깎이|물건","리코더|물건",
+      "무지개|자연","소나기|자연","눈사람|자연","해바라기|자연","개나리|자연","반딧불이|자연","은하수|자연",
+      "단풍잎|자연","고드름|자연","민들레|자연","보름달|자연","새싹|자연",
+      "놀이공원|장소","수영장|장소","박물관|장소","우체국|장소","소방서|장소","전통시장|장소","동물원|장소",
+      "기차역|장소","미술관|장소","해수욕장|장소","천문대|장소","횡단보도|장소"],
+    /* 밸런스 게임 — 한 줄에 '왼쪽|오른쪽' */
+    balance:["평생 여름만|평생 겨울만","투명 인간 되기|하늘 날기","급식에 매일 짜장면|급식에 매일 피자",
+      "강아지 키우기|고양이 키우기","바다로 여행|산으로 여행","방학 두 달, 숙제 많이|방학 한 달, 숙제 없음",
+      "매일 비 오는 날|매일 바람 부는 날","동물과 말하기|외국어 모두 하기","과거로 가기|미래로 가기",
+      "떡볶이만 평생|김밥만 평생","아침형 사람|저녁형 사람","체육 시간 두 배|쉬는 시간 두 배",
+      "시험 없는 학교|숙제 없는 학교","공룡 시대 여행|우주 여행","순간 이동|시간 멈추기",
+      "달콤한 것만 먹기|짭짤한 것만 먹기","운동장 넓은 학교|도서관 넓은 학교","1년 내내 생일|1년 내내 크리스마스",
+      "탕수육 부먹|탕수육 찍먹","치킨|피자","운동장에서 놀기|교실에서 놀기",
+      "하늘을 나는 능력|물속에서 숨 쉬는 능력","눈 오는 날|비 오는 날","여름 방학|겨울 방학"],
+    /* OX 퀴즈 — 한 줄에 '문제|O 또는 X|짧은 설명(없어도 됨)' */
+    ox:["복도에서는 오른쪽으로 걸어 다녀요.|O|복도와 계단은 오른쪽으로 다니는 것이 약속이에요.",
+      "횡단보도 초록불이 깜빡일 때는 뛰어서 건너도 돼요.|X|깜빡일 때는 멈추고 다음 신호를 기다려요.",
+      "불이 나면 엘리베이터를 타고 빨리 내려가요.|X|불이 나면 엘리베이터가 멈출 수 있어요. 계단으로 대피해요.",
+      "손은 비누로 30초 넘게 씻는 것이 좋아요.|O|손가락 사이와 손톱 밑까지 꼼꼼히 씻어요.",
+      "지진이 나면 책상 아래로 들어가 머리를 보호해요.|O|흔들림이 멈추면 운동장처럼 넓은 곳으로 대피해요.",
+      "모르는 사람이 주는 간식은 받아도 괜찮아요.|X|모르는 사람이 주는 것은 받지 않아요.",
+      "급식을 남기지 않으면 음식물 쓰레기가 줄어요.|O|먹을 만큼만 받는 것도 좋은 방법이에요.",
+      "자전거를 탈 때는 헬멧을 꼭 써야 해요.|O|넘어졌을 때 머리를 지켜 줘요.",
+      "우유갑은 헹구지 않고 그대로 버려도 돼요.|X|헹구고 펼쳐 말린 뒤 종이팩으로 내놓아요.",
+      "한글은 세종대왕이 만들었어요.|O|훈민정음이라는 이름으로 1446년에 널리 알렸어요.",
+      "친구가 싫어하는 별명을 불러도 장난이면 괜찮아요.|X|친구가 싫어하면 장난이 아니에요.",
+      "실내화를 신고 운동장에 나가도 돼요.|X|교실이 더러워지지 않게 신발을 갈아 신어요.",
+      "물을 틀어 놓고 양치하면 물을 아낄 수 있어요.|X|컵에 물을 받아 양치하면 물을 아껴요.",
+      "거미는 곤충이에요.|X|거미는 다리가 8개라서 곤충이 아니에요.",
+      "우리나라의 꽃은 무궁화예요.|O|",
+      "비 오는 날 복도에서는 더 천천히 걸어야 해요.|O|바닥이 젖어 미끄러울 수 있어요.",
+      "태극기의 네 귀퉁이에 있는 검은 막대는 ‘괘’라고 불러요.|O|건 · 곤 · 감 · 이, 네 가지 괘가 있어요.",
+      "학생자치회의에서는 손을 들고 사회자가 이름을 부르면 말해요.|O|차례를 지켜야 모두의 의견을 들을 수 있어요.",
+      "지구는 태양 주위를 돌아요.|O|한 바퀴 도는 데 1년이 걸려요.",
+      "교실 전등은 마지막에 나가는 사람이 끄면 좋아요.|O|"],
+    /* 텔레파시 주제 */
+    tele:["겨울 하면 떠오르는 것","빨간색 하면 떠오르는 것","학교에서 제일 좋아하는 장소",
+      "급식에 나오면 기분 좋은 반찬","동물원에서 제일 먼저 보고 싶은 동물","비 오는 날 떠오르는 것",
+      "우리 반 하면 떠오르는 낱말","여름에 꼭 필요한 물건","운동회 하면 떠오르는 종목",
+      "천 원으로 살 수 있는 것","가방 속에 꼭 들어 있는 물건","들으면 기분 좋아지는 소리",
+      "방학에 가장 하고 싶은 일","생일 하면 떠오르는 것","바다 하면 떠오르는 것",
+      "노란색 음식","우리 학교 자랑거리","친구에게 듣고 싶은 말","웃음이 나오는 순간",
+      "교실에서 나는 소리","봄 하면 떠오르는 것","세상에서 제일 빠른 것","동그란 물건",
+      "하늘에서 볼 수 있는 것","손으로 하는 놀이"],
+    iceSound:true, roster:"", iceVer:2
   },
   /* 학급마다 자기 기록만 쌓이도록 비운 채로 시작한다 */
   meetings:[]
@@ -436,15 +657,33 @@ const DEFAULTS={
 
 /* ---------- state ---------- */
 let db, state={view:"home", id:null, step:0, confirmDel:null,
-  drawOpen:false, drawUsed:[], drawn:null,
-  iceMode:"q", iceQ:0, iceC:0, iceShow:false};
+  drawOpen:false, drawUsed:[], drawn:null, drawMode:"one", drawGroups:4, drawResult:null,
+  iceMode:"menu", iceQ:0, iceC:0, iceShow:false, iceFirst:false,
+  bal:{i:0,a:0,b:0}, rps:{phase:"idle",round:0,hand:0,word:""}, ox:{i:0,show:false},
+  miss:{phase:"idle",hard:false}, act:{phase:"setup",cat:"전체",sec:60},
+  tele:{phase:"idle",i:0,n:3}};
 
 function load(){
   try{
     const raw=localStorage.getItem(KEY);
     if(raw){db=JSON.parse(raw); db.settings=Object.assign({},DEFAULTS.settings,db.settings);
+      /* 놀이상자를 합치기 전에 쓰던 설정: 선생님이 고친 질문·낱말은 두고, 새 것만 한 번 덧붙인다 */
+      if((db.settings.iceVer||0)<2){
+        const add=(key,keyOf)=>{
+          const cur=Array.isArray(db.settings[key])?db.settings[key]:[];
+          const have=new Set(cur.map(keyOf));
+          db.settings[key]=cur.concat(DEFAULTS.settings[key].filter(x=>!have.has(keyOf(x))));
+        };
+        add("questions",x=>String(x).trim());
+        add("quiz",x=>String(x).split("|")[0].trim());
+        db.settings.iceVer=2;
+      }
       /* 표결 기능 이전에 만든 회의에도 빈 후보 목록을 달아 준다 */
-      (db.meetings||[]).forEach(mm=>{ if(!Array.isArray(mm.goalVote)) mm.goalVote=[]; });
+      (db.meetings||[]).forEach(mm=>{
+        if(!Array.isArray(mm.goalVote)) mm.goalVote=[];
+        if(!Array.isArray(mm.iceAnswers)) mm.iceAnswers=[];
+        if(!Array.isArray(mm.reviewNotes)) mm.reviewNotes=[];
+      });
       db.meetings=db.meetings||[]; return;}
   }catch(e){}
   db=JSON.parse(JSON.stringify(DEFAULTS));
@@ -469,9 +708,9 @@ async function getDownloads(){
 }
 function meetings(){return db.meetings.slice().sort((a,b)=>b.no-a.no||b.updatedAt-a.updatedAt);}
 function current(){return db.meetings.find(m=>m.id===state.id);}
-function toast(msg){
+function toast(msg,ms){
   const t=document.createElement("div"); t.className="toast"; t.textContent=msg;
-  document.body.appendChild(t); setTimeout(()=>t.remove(),1900);
+  document.body.appendChild(t); setTimeout(()=>t.remove(),ms||1900);
 }
 
 /* ---------- 음원 ---------- */
@@ -511,43 +750,98 @@ async function idbDel(k){
 function srcFor(k){ return userAudio[k] || (AUDIO[k]&&AUDIO[k].startsWith("data:") ? AUDIO[k] : ""); }
 function hasAudio(k){ return !!srcFor(k); }
 
+/* 수백 KB짜리 data: 주소를 그대로 재생하면 브라우저·보안 환경에 따라 막히거나 멈춘다.
+   그래서 바이트로 풀어 blob: 주소로 재생하고, 그게 막히는 곳에서만 data: 로 되돌아간다.
+   곡마다 재생기를 따로 두어, 화면을 오가도 이전 곡의 이벤트가 섞이지 않게 한다. */
+const blobURL={}, players={};
 let audioEl=null, audioKey=null;
-function getAudio(){
-  if(!audioEl){
-    audioEl=new Audio(); audioEl.preload="auto";
-    ["timeupdate","play","pause","ended","loadedmetadata"].forEach(ev=>
-      audioEl.addEventListener(ev,paintAudio));
-  }
-  return audioEl;
+function blobFor(k){
+  if(blobURL[k]) return blobURL[k];
+  const src=srcFor(k);
+  if(!src.startsWith("data:")) return src;
+  try{
+    const i=src.indexOf(","), head=src.slice(0,i);
+    const mime=(head.match(/^data:([^;,]+)/)||[])[1]||"audio/mpeg";
+    const bin=atob(src.slice(i+1)), u8=new Uint8Array(bin.length);
+    for(let j=0;j<bin.length;j++) u8[j]=bin.charCodeAt(j);
+    return blobURL[k]=URL.createObjectURL(new Blob([u8],{type:mime}));
+  }catch(e){ return src; }
+}
+/* 음원을 바꿔 넣었을 때 옛 재생기와 blob 을 버린다 */
+function dropPlayer(k){
+  if(players[k]){ players[k].pause(); delete players[k]; }
+  if(blobURL[k]){ try{ URL.revokeObjectURL(blobURL[k]); }catch(e){} delete blobURL[k]; }
+  if(audioKey===k){ audioKey=null; audioEl=null; }
+}
+function playerFor(k){
+  if(players[k]) return players[k];
+  const a=new Audio(); a.preload="auto"; a._stage="blob";
+  ["timeupdate","play","pause","ended","loadedmetadata","durationchange","canplay"].forEach(ev=>
+    a.addEventListener(ev,()=>{ if(a===audioEl) paintAudio(); }));
+  a.addEventListener("error",()=>{
+    if(a._stage==="blob"){                     /* blob 이 막힌 환경이면 data: 로 한 번 더 */
+      a._stage="data"; a.src=srcFor(k); a.load();
+      if(a===audioEl&&a._wantPlay) a.play().catch(()=>{ a._blocked=true; paintAudio(); });
+      return;
+    }
+    a._failed=true; if(a===audioEl) paintAudio();
+  });
+  a.src=blobFor(k);
+  return players[k]=a;
 }
 function mmss(s){
   if(!isFinite(s)||s<0) s=0;
   return Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0");
 }
+/* 재생 줄은 '지금 무슨 상태인지'를 글로 보여 준다. 조용히 0:00 에 머물러 있으면 원인을 알 수 없다 */
 function paintAudio(){
   const a=audioEl; if(!a) return;
-  const fill=$("#pfill"), time=$("#ptime"), btn=$("#pbtn");
+  const fill=$("#pfill"), time=$("#ptime"), btn=$("#pbtn"), bar=$(".audiobar");
+  if(bar){ bar.classList.toggle("is-failed",!!a._failed); bar.classList.toggle("is-waiting",!a._failed&&a.paused&&!!a._blocked); }
   if(fill) fill.style.width=(a.duration?(a.currentTime/a.duration*100):0)+"%";
-  if(time) time.textContent=mmss(a.currentTime)+" / "+mmss(a.duration);
+  if(time){
+    time.textContent = a._failed ? "소리 파일을 열지 못했습니다"
+      : (a.paused&&a._why) ? "재생이 막혔습니다 · "+a._why      /* ▶를 눌렀는데도 막힌 이유 — 사라지지 않게 남긴다 */
+      : (a.paused&&a._blocked&&!a.currentTime) ? "▶ 를 눌러 재생하세요"
+      : mmss(a.currentTime)+" / "+mmss(a.duration);
+  }
   if(btn){ btn.textContent=a.paused?"▶":"❚❚";
-    btn.setAttribute("aria-label",a.paused?"재생":"멈춤"); }
+    btn.setAttribute("aria-label",a.paused?"재생":"멈춤"); btn.disabled=!!a._failed; }
 }
 /* 슬라이드를 옮길 때마다 소리를 그 슬라이드에 맞춘다 */
 function syncAudio(){
   const key=(state.view==="run")?(steps()[state.step]||{}).id:null;
   const want=(key&&AUDIO[key]!==undefined&&hasAudio(key))?key:null;
   if(want===audioKey){ paintAudio(); return; }
-  if(audioEl){ audioEl.pause(); audioEl.removeAttribute("src"); audioEl.load(); }
-  audioKey=want;
-  if(!want) return;
-  const a=getAudio(); a.src=srcFor(want); a.currentTime=0;
-  if(db.settings.autoplay) a.play().catch(()=>{});
+  if(audioEl){ audioEl.pause(); audioEl._wantPlay=false; }
+  audioKey=want; audioEl=want?playerFor(want):null;
+  if(!audioEl) return;
+  try{ audioEl.currentTime=0; }catch(e){}
+  audioEl._blocked=false; audioEl._why="";
+  if(db.settings.autoplay){
+    audioEl._wantPlay=true;
+    const a=audioEl;
+    a.play().catch(()=>{ a._blocked=true; if(a===audioEl) paintAudio(); });
+  }else audioEl._blocked=true;                  /* 자동 재생을 끈 경우에도 ▶ 안내를 띄운다 */
   paintAudio();
 }
 function toggleAudio(){
-  if(!audioKey) return;
-  const a=getAudio();
-  if(a.paused) a.play().catch(()=>toast("재생 버튼을 한 번 눌러 주세요")); else a.pause();
+  const a=audioEl; if(!a) return;
+  if(a._failed){ toast("소리 파일을 열지 못했습니다. 설정 → 음원에서 파일을 다시 넣어 보세요"); return; }
+  if(a.paused){
+    a._wantPlay=true;
+    a.play().then(()=>{ a._blocked=false; a._why=""; paintAudio(); })
+     .catch(err=>{
+       const n=(err&&err.name)||"알 수 없음";
+       a._blocked=true; a._why=n; paintAudio();
+       /* 누른 뒤에도 NotAllowedError 면 이 화면(뷰어)이 소리를 허락하지 않는 것이다 */
+       toast(n==="NotAllowedError"
+         ? "이 화면에서는 소리를 켤 수 없습니다. 크롬이나 엣지 브라우저에서 앱 링크를 열어 주세요"
+         : n==="NotSupportedError"
+         ? "소리 파일을 열지 못했습니다. 설정 → 음원에서 파일을 다시 넣어 보세요"
+         : "소리를 켜지 못했습니다 ("+n+"). 컴퓨터 소리와 음소거를 확인해 주세요", 6000);
+     });
+  } else a.pause();
 }
 /* 가사에 밀리지 않도록 진행 바 위 고정 줄에 둔다 */
 function audioBarHTML(key){
@@ -570,12 +864,15 @@ function go(view,opts){
 
 function render(){
   const app=$("#app");
+  /* 여는 놀이 화면을 벗어나면 돌던 카운트다운을 멈춘다 */
+  if(iceTimer&&!onIceSlide()) iceStop();
   if(state.view==="run") app.innerHTML=viewRun();
   else if(state.view==="prep") app.innerHTML=viewPrep();
   else if(state.view==="record") app.innerHTML=viewRecord();
   else if(state.view==="settings") app.innerHTML=viewSettings();
   else app.innerHTML=viewHome();
   syncAudio();
+  if(state.view==="run"&&state.qrOpen) drawQR(studentUrl(state.qrFor));
 }
 
 /* ---------- home ---------- */
@@ -721,6 +1018,9 @@ function viewRun(){
         <button class="b-btn" data-act="exit">나가기</button>
         <button class="b-btn" data-act="fs" title="전체화면">전체화면</button>
         <button class="b-btn" data-act="draw-open" title="발언할 번호 뽑기 (R)">번호 뽑기</button>
+        ${PADLET_CTX[step.id]?`<span class="grp-sep"></span>
+        <button class="b-btn" data-act="qr-open" title="학생들이 휴대폰으로 의견을 내도록 QR을 띄웁니다">QR 띄우기</button>
+        <button class="b-btn" data-act="imp-open" title="패들렛에 모인 의견을 이 화면으로 가져옵니다">의견 가져오기</button>`:""}
       </div>
       <div class="pos">${state.step+1} / ${ST.length}</div>
       <div class="grp">
@@ -732,6 +1032,8 @@ function viewRun(){
       </div>
     </div>
     ${drawHTML(m)}
+    ${qrHTML(m)}
+    ${importHTML()}
   </div>`;
 }
 
@@ -754,34 +1056,7 @@ function slide(m,id){
     <p class="lead">${esc(fmtDate(m.date))}<br>
       사회 ${esc(m.chair||"—")} · 기록 ${esc(m.recorders||"—")}</p>`;
 
-  case "ice": {
-    const mode=state.iceMode||"q";
-    const qs=s.questions||[], qz=s.quiz||[];
-    const tab=(k,t)=>`<button class="icetab${mode===k?" on":""}" data-act="ice-mode" data-k="${k}">${t}</button>`;
-    let body;
-    if(mode==="q"){
-      const q=qs.length?qs[(state.iceQ||0)%qs.length]:"";
-      body=`<div class="icecard">${q?esc(q):`<span style="color:var(--chalk-3)">설정에서 질문을 넣어 주세요</span>`}</div>
-        <div class="addrow">
-          <button class="b-btn draw-go" data-act="ice-next">다음 질문</button>
-          <button class="b-btn" data-act="draw-open">번호 뽑아 발표하기</button>
-        </div>`;
-    }else{
-      const raw=qz.length?qz[(state.iceC||0)%qz.length]:"";
-      const [ans,hint]=String(raw).split("|");
-      body=`<div class="icecho">${esc(toCho(ans||""))}</div>
-        ${hint?`<p class="lead">힌트 · ${esc(hint)}</p>`:""}
-        <div class="icecard${state.iceShow?"":" veiled"}">${state.iceShow?esc(ans||""):"정답 가림"}</div>
-        <div class="addrow">
-          <button class="b-btn draw-go" data-act="ice-show">${state.iceShow?"정답 숨기기":"정답 보기"}</button>
-          <button class="b-btn" data-act="ice-next">다음 문제</button>
-          <button class="b-btn" data-act="draw-open">번호 뽑기</button>
-        </div>`;
-    }
-    return `<h2>여는 놀이</h2>
-      <div class="icetabs">${tab("q","오늘의 질문")}${tab("cho","초성 퀴즈")}</div>
-      ${body}`;
-  }
+  case "ice": return iceSlide(m);
 
   case "ceremony": return `
     <div class="eyebrow">01</div><h2>국민의례</h2>
@@ -800,7 +1075,13 @@ function slide(m,id){
   case "review": {
     const r=m.review, tot=r.good+r.mid+r.bad;
     const bar=(v,c)=>`<span style="flex:${v||0} 1 0;background:${c};min-width:${v?"6px":"0"}"></span>`;
-    return `<div class="eyebrow">04</div>
+    /* 휴대폰으로 받은 반성 의견은 손들기 집계와 탭으로 나눠, 한 화면을 넘지 않게 한다 */
+    const notes=m.reviewNotes||[], tab=notes.length&&state.reviewTab==="notes"?"notes":"vote";
+    const tabs=notes.length?`<div class="icetabs">
+        <button class="icetab${tab==="vote"?" on":""}" data-act="rv-tab" data-k="vote">손들기</button>
+        <button class="icetab${tab==="notes"?" on":""}" data-act="rv-tab" data-k="notes">학생 의견 ${notes.length}</button>
+      </div>`:"";
+    const head=`<div class="eyebrow">04</div>
     <h2>이번달 실천내용 반성</h2>
     <div class="b-card">
       <div class="eyebrow" style="letter-spacing:.14em;font-size:.8em">이번 달 회의주제</div>
@@ -808,9 +1089,14 @@ function slide(m,id){
         placeholder="이번 달 회의주제" style="font-family:var(--display);font-weight:600;
         font-size:2em;margin-top:.15em;border-color:transparent;background:transparent;
         padding-left:0">
-      ${r.promises.length?`<ol style="margin:.5em 0 0;padding-left:1.3em;color:var(--chalk-2);font-size:1.2em;line-height:1.75">
+      ${r.promises.length&&tab==="vote"?`<ol style="margin:.5em 0 0;padding-left:1.3em;color:var(--chalk-2);font-size:1.2em;line-height:1.75">
         ${r.promises.map(p=>`<li>${esc(p)}</li>`).join("")}</ol>`:""}
     </div>
+    ${tabs}`;
+    if(tab==="notes") return head+`
+      <div class="rvnotes">${notes.map(n=>`<div class="rvnote">${esc(n)}</div>`).join("")}</div>
+      <div><button class="b-btn" data-act="rv-clear" style="font-size:.8rem">의견 지우기</button></div>`;
+    return head+`
     <div class="votes">
       ${vt("good","잘 지켜짐","var(--good-b)",r.good,"1")}
       ${vt("mid","보통","var(--mid-b)",r.mid,"2")}
@@ -854,7 +1140,14 @@ function slide(m,id){
 
   case "promise": return `
     <div class="eyebrow">06</div><h2>다음달 실천내용 <span style="font-size:.4em;font-weight:400;color:var(--chalk-2)">우리 약속</span></h2>
-    <ul class="${plistClass(m.next.promises.length)}" id="plist">${listItems(m.next.promises,"promise")}</ul>
+    <div class="goalbanner">
+      <span class="gb-lab">다음 달 생활 목표</span>
+      ${m.next.topic
+        ? `<span class="gb-t">${esc(m.next.topic)}</span>`
+        : `<span class="gb-empty">아직 정하지 않았습니다</span>
+           <button class="b-btn" data-act="goto" data-id="goal">목표 정하러 가기</button>`}
+    </div>
+    <ul class="${plistClass(m.next.promises.length,true)}" id="plist">${listItems(m.next.promises,"promise")}</ul>
     <div class="addrow">
       <input class="b-inp" id="add-promise" placeholder="약속을 적고 Enter" data-add="promise">
       <button class="b-btn" data-act="add" data-k="promise">추가</button>
@@ -949,25 +1242,855 @@ function paintGoal(){
   if(rail) rail.classList.toggle("filled",stepFilled(m,"goal"));
 }
 
-/* 번호 뽑기 — 한 번 나온 번호는 다시 안 나오게 해서 골고루 돌아가게 한다 */
+/* ---------- 패들렛으로 학생 의견 받기 ----------
+   앱은 서버가 없어 학생 폰과 칠판이 직접 이어질 수 없다. 그래서 모으는 일은 패들렛에 맡기고,
+   앱은 QR로 패들렛을 열어 주고, 모인 글을 붙여넣기로 받아 선생님이 거른 것만 넣는다. */
+const PADLET_CTX={
+  ice:    {name:"오늘의 질문 답",  sec:"놀이", ask:()=>"화면의 질문에 대한 내 생각을 적어 주세요."},
+  review: {name:"이번달 반성 의견", sec:"반성", ask:m=>m.review.topic
+             ? `“${m.review.topic}”을(를) 이번 달에 얼마나 잘 지켰는지 내 생각을 적어 주세요.`
+             : "이번 달 약속을 얼마나 잘 지켰는지 내 생각을 적어 주세요."},
+  goal:   {name:"생활 목표 후보",  sec:"목표", ask:()=>"다음 달 우리 반이 지키면 좋을 생활 목표를 적어 주세요."},
+  promise:{name:"다음달 실천내용", sec:"실천", ask:m=>m.next.topic
+             ? `“${m.next.topic}” 목표를 지키려면 무엇을 하면 좋을지 적어 주세요.`
+             : "다음 달 목표를 지키기 위해 할 수 있는 일을 적어 주세요."},
+  suggest:{name:"건의사항",        sec:"건의", ask:()=>"학교생활에서 불편한 점이나 바라는 점을 적어 주세요."}
+};
+
+/* 주소를 https:// 없이 붙여넣으면 휴대폰이 QR을 글자로만 읽으므로 붙여 준다 */
+function padletUrl(){
+  let u=String(db.settings.padletUrl||"").trim();
+  if(u&&!/^https?:\/\//i.test(u)) u="https://"+u;
+  return u;
+}
+
+/* ---------- 구글 설문지 ----------
+   학생은 설문지로 내고, 앱은 응답 시트를 읽는다. 계정이 없는 선생님도 파일·GitHub에서 자동으로 가져올 수 있다.
+   설문지의 '어디에 낼 의견인가요?' 보기는 아래 글자와 똑같아야 화면마다 나뉜다. */
+const GFORM_LABEL={ice:"여는 놀이", review:"이번달 반성", goal:"생활 목표", promise:"실천내용", suggest:"건의사항"};
+const useGform=()=>db.settings.source==="gform";
+/* 앱 링크(claude.ai) 안에서는 외부 스크립트가 막혀 응답 시트를 읽을 수 없다 */
+const inArtifact=()=>!!window.claude;
+
+function gformSheetId(){
+  const m=String(db.settings.gformSheet||"").match(/\/spreadsheets\/d\/([A-Za-z0-9_-]{20,})/);
+  return m?m[1]:"";
+}
+/* '미리 채워진 링크'를 넣어 두면 화면마다 그 칸을 골라 둔 설문지를 연다. 일반 링크면 학생이 칸을 고른다 */
+function gformPrefill(){
+  const raw=String(db.settings.gformLink||"").trim(); if(!raw) return null;
+  try{
+    const u=new URL(/^https?:\/\//i.test(raw)?raw:"https://"+raw);
+    const entry=[...u.searchParams.keys()].find(k=>/^entry\.\d+$/.test(k));
+    return {href:u.href, base:u.origin+u.pathname, entry:entry||null};
+  }catch(e){ return {href:raw, base:raw, entry:null}; }
+}
+function formLinkFor(kind){
+  const p=gformPrefill(); if(!p) return "";
+  if(!p.entry) return p.href;
+  return `${p.base}?usp=pp_url&${p.entry}=${encodeURIComponent(GFORM_LABEL[kind]||"")}`;
+}
+/* 학생 휴대폰이 열 주소 — 설정에서 고른 쪽 */
+function studentUrl(kind){ return useGform()?formLinkFor(kind):padletUrl(); }
+
+function qrHTML(m){
+  if(!state.qrOpen) return "";
+  const kind=state.qrFor, url=studentUrl(kind), ctx=PADLET_CTX[kind]||PADLET_CTX.suggest;
+  const g=useGform(), pick=g&&!(gformPrefill()||{}).entry;
+  /* 미리 채워진 링크가 아니면, 설문지가 칸을 고르는 모양인지 질문이 나뉜 모양인지 모르므로 둘 다 맞는 말로 */
+  const ask=pick ? `설문지를 열어 ‘${GFORM_LABEL[kind]}’에 대한 의견을 적어 주세요.` : ctx.ask(m);
+  return `<div class="drawwrap">
+    <div class="drawbox" style="max-width:44ch">
+      <div class="eyebrow">휴대폰으로 의견 내기 · ${esc(ctx.name)}</div>
+      ${url?`
+        <div class="qrbox" id="qrbox"></div>
+        <p class="drawmeta">${esc(ask)}</p>
+        <p class="qrurl">${esc(url)}</p>`
+      :`<p class="lead">설정에서 ${g?"구글 설문지 링크":"우리 반 패들렛 주소"}를 먼저 넣어 주세요.</p>
+        <button class="b-btn draw-go" data-act="settings">설정 열기</button>`}
+      <button class="b-btn drawclose" data-act="qr-close">닫기 (Esc)</button>
+    </div>
+  </div>`;
+}
+
+/* QR 라이브러리는 QR을 처음 띄울 때만 불러온다. 패들렛 자체가 인터넷이 있어야 되므로 여기서 인터넷을 요구해도 잃는 것이 없다 */
+let qrLib=null;
+function loadQRLib(){
+  if(window.QRCode) return Promise.resolve();
+  if(qrLib) return qrLib;
+  qrLib=new Promise((res,rej)=>{
+    const s=document.createElement("script");
+    s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+    s.onload=res; s.onerror=()=>{ qrLib=null; rej(); };
+    document.head.appendChild(s);
+  });
+  return qrLib;
+}
+function drawQR(url){
+  const box=$("#qrbox"); if(!box||!url) return;
+  box.innerHTML=`<p style="color:#555;font-size:14px;padding:40px 20px;line-height:1.5">QR을 만드는 중…</p>`;
+  loadQRLib().then(()=>{
+    const b=$("#qrbox"); if(!b) return;
+    b.innerHTML="";
+    const size=Math.max(200,Math.min(460,Math.floor(Math.min(innerWidth,innerHeight)*.46)));
+    new window.QRCode(b,{text:url,width:size,height:size,
+      colorDark:"#000000",colorLight:"#ffffff",correctLevel:window.QRCode.CorrectLevel.M});
+  }).catch(()=>{
+    const b=$("#qrbox");
+    if(b) b.innerHTML=`<p style="color:#555;font-size:14px;padding:30px 20px;line-height:1.5;max-width:22em">
+      QR을 불러오지 못했습니다. 인터넷 연결을 확인하거나, 아래 주소를 칠판에 적어 주세요.</p>`;
+  });
+}
+
+function importHTML(){
+  if(!state.impOpen) return "";
+  const ctx=PADLET_CTX[state.impFor]||PADLET_CTX.suggest, items=state.impItems, src=state.impSrc||{};
+  const on=items?items.filter(x=>x.on).length:0;
+  const via=autoSource(), canAuto=!!via, g=useGform();
+  const where=g?"구글 설문지 응답 시트":"패들렛";
+  const pasteUI=`
+    <p class="imp-help">${g?"응답 시트에서 의견 칸을":"패들렛에서 의견들을"} 드래그해 <b>Ctrl+C</b>로 복사한 뒤, 아래 칸에 <b>Ctrl+V</b>로 붙여넣으세요.
+      한 줄이 의견 하나가 됩니다.</p>
+    <textarea class="b-inp" id="imp-text" rows="6" placeholder="여기에 붙여넣기"></textarea>
+    <div class="addrow" style="justify-content:center">
+      <button class="b-btn draw-go" data-act="imp-parse">나눠 보기</button></div>`;
+  const tag=it=>it.dup?"이미 있음":it.old?"지난 회의":it.name?"이름?":it.joke?"장난?":"";
+  const srcName=src.via==="gform"?"구글 설문지":"패들렛";
+  const srcLine=src.auto
+    ? (src.sec ? (src.via==="gform"
+                   ? (src.q ? `구글 설문지 ‘${esc(src.sec)}’ 질문에서 ${src.total}개를 찾았습니다.`
+                            : `구글 설문지에서 ‘${esc(src.sec)}’ 응답 ${src.total}개를 찾았습니다.`)
+                   : `패들렛 ‘${esc(src.sec)}’ 칸에서 ${src.total}개를 찾았습니다.`)
+               : `이 화면에 맞는 칸이 없어 ${srcName} 전체 ${src.total}개를 보여 드립니다.`)
+    : "";
+  return `<div class="drawwrap">
+    <div class="drawbox impbox">
+      <div class="eyebrow">의견 가져오기 → ${esc(ctx.name)}</div>
+      ${!items?`
+        ${canAuto?`
+          <button class="b-btn draw-go imp-auto" data-act="imp-auto"${state.impBusy?" disabled":""}>
+            ${state.impBusy?`${where}에서 불러오는 중…`:`${g?"구글 설문지":"패들렛"}에서 바로 불러오기`}</button>
+          <p class="imp-help">${g
+            ? `설문지 응답 중 ‘${esc(GFORM_LABEL[state.impFor]||"")}’에 해당하는 것을 가져옵니다.`
+            : `패들렛에서 이름에 ‘${esc(ctx.sec)}’이(가) 들어간 칸의 글을 가져옵니다.`}</p>`:""}
+        ${state.impErr?`<p class="imp-err" role="alert">${esc(state.impErr)}</p>`:""}
+        ${canAuto?`<details class="imp-alt"><summary>대신 복사해서 붙여넣기</summary>${pasteUI}</details>`:pasteUI}`
+      :items.length?`
+        ${srcLine?`<p class="imp-src">${srcLine}</p>`:""}
+        <p class="imp-help">넣을 것만 체크해 두세요. 장난 글${src.auto?"과 지난 회의 글":"이나 이름"}은 미리 체크를 풀어 두었습니다.</p>
+        <div class="implist">${items.map((it,i)=>`
+          <label class="impitem${it.dup||it.old?" dup":""}"><input type="checkbox" data-imp="${i}"${it.on?" checked":""}>
+            <span>${esc(it.t)}</span>${tag(it)?`<em>${tag(it)}</em>`:""}</label>`).join("")}</div>
+        <div class="addrow" style="justify-content:center">
+          <button class="b-btn draw-go" data-act="imp-apply" id="imp-apply"${on?"":" disabled"}>선택한 ${on}개 넣기</button>
+          <button class="b-btn" data-act="imp-back">${src.auto?"처음으로":"다시 붙여넣기"}</button></div>`
+      :`<p class="imp-help">${src.auto
+          ? (src.sec?`${srcName} ‘${esc(src.sec)}’에 아직 올라온 의견이 없습니다.`:`${srcName}에 아직 올라온 의견이 없습니다.`)
+          : "붙여넣은 글에서 의견을 찾지 못했습니다."}</p>
+        <div class="addrow" style="justify-content:center">
+          ${src.auto?`<button class="b-btn draw-go" data-act="imp-auto">다시 불러오기</button>`:""}
+          <button class="b-btn" data-act="imp-back">${src.auto?"처음으로":"다시 붙여넣기"}</button></div>`}
+      <button class="b-btn drawclose" data-act="imp-close">닫기 (Esc)</button>
+    </div>
+  </div>`;
+}
+
+/* ---------- 패들렛에서 바로 읽어 오기 (앱 링크에서만) ----------
+   선생님 claude.ai 계정의 'Padlet MCP' 연결을 통해 읽는다. 내려받은 파일·GitHub 주소에는
+   window.claude 가 없어 mcpNS 가 null 로 남고, 붙여넣기만 보인다. */
+const PADLET_SERVER="Padlet MCP";
+let mcpNS=null;
+(async()=>{
+  try{
+    if(window.claude&&typeof window.claude.use==="function"){
+      mcpNS=await window.claude.use("mcp");
+      if(mcpNS&&state.impOpen) render();
+    }
+  }catch(e){ mcpNS=null; }
+})();
+
+/* 칸 이름으로 화면을 찾는다. 선생님 패들렛: '회의 중 여는 놀이' '생활 목표' '실천내용' '건의사항' */
+/* 칸·질문 이름으로 어느 화면의 의견인지 정한다. 순서가 중요하다:
+   '이번달 실천내용 반성하기'는 '실천'이 들어가도 반성 화면이므로 반성을 가장 먼저 본다 */
+function screenFromLabel(s){
+  s=String(s||"");
+  if(/반성|이번\s*달|지난\s*달/.test(s)) return "review";
+  if(/놀이|질문|여는|아이스/.test(s)) return "ice";
+  if(/목표|후보/.test(s)) return "goal";
+  if(/실천|약속/.test(s)) return "promise";
+  if(/건의|바라|불편/.test(s)) return "suggest";
+  return null;
+}
+
+/* 글 본문은 HTML로 온다. DOMParser 로 만든 문서는 스크립트·이미지가 돌지 않아 학생 글을 안전하게 풀 수 있다 */
+function htmlText(h){
+  if(!h) return "";
+  const s=String(h).replace(/<br\s*\/?>/gi,"\n").replace(/<\/(p|div|li|h\d)>/gi,"\n");
+  const doc=new DOMParser().parseFromString(s,"text/html");
+  return (doc.body.textContent||"").split("\n")
+    .map(x=>x.replace(/ /g," ").replace(/\s+/g," ").trim()).filter(Boolean).join(" ");
+}
+function localDay(iso){
+  const d=new Date(iso); if(isNaN(d)) return "";
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+/* 같은 패들렛을 매달 다시 쓰면 지난달 글이 남아 있다. 지난 회의 날짜까지 올라온 글은 '지난 회의'로 본다 */
+function prevMeetingDate(m){
+  const ds=db.meetings.filter(x=>x.id!==m.id&&x.date&&x.date<m.date).map(x=>x.date).sort();
+  return ds.length?ds[ds.length-1]:null;
+}
+function padletData(payload){
+  let p=payload;
+  if(typeof p==="string"){ try{ p=JSON.parse(p); }catch(e){ return null; } }
+  if(!p||p.success===false) return null;
+  const c=p.padlet&&p.padlet.padlet_content;
+  if(!c||!Array.isArray(c.posts)) return null;
+  return {sections:Array.isArray(c.sections)?c.sections:[], posts:c.posts};
+}
+/* 오류마다 고칠 방법이 다르므로 한 문구로 뭉치지 않는다 */
+function mcpErrText(err){
+  switch(err&&err.code){
+    case "needs_reauth": return "패들렛 연결이 끊겼습니다. claude.ai 설정 → 커넥터에서 Padlet MCP를 다시 연결해 주세요.";
+    case "server_not_connected":
+    case "server_not_found": return "이 계정에 패들렛이 연결돼 있지 않습니다. claude.ai 설정 → 커넥터에서 Padlet MCP를 추가해 주세요.";
+    case "selection_required": return "패들렛 연결이 두 개 이상입니다. 화면 위쪽 안내에서 쓸 연결을 하나 골라 주세요.";
+    case "tool_error": return "패들렛을 읽지 못했습니다. 설정의 패들렛 주소가 맞는지, 이 계정으로 볼 수 있는 패들렛인지 확인해 주세요.";
+    case "server_unavailable":
+    case "rate_limited": return "패들렛이 잠시 응답하지 않습니다. 조금 뒤 다시 눌러 주세요.";
+    case "not_in_manifest": case "blocked_by_policy": case "approval_required":
+      return "학교 계정 정책 때문에 패들렛 연결을 쓸 수 없습니다. 복사해서 붙여넣기로 가져와 주세요.";
+    case "not_granted": case "capability_disabled": case "capability_removed":
+      return "이 화면에서는 패들렛 연결을 쓸 수 없습니다. 복사해서 붙여넣기로 가져와 주세요.";
+    case "cancelled": return "";
+    default: return "패들렛을 불러오지 못했습니다"+(err&&err.message?` (${err.message})`:"")+". 복사해서 붙여넣기로 가져와 주세요.";
+  }
+}
+
+/* 지금 쓸 수 있는 자동 가져오기 — 없으면 null(붙여넣기만) */
+function autoSource(){
+  if(useGform()) return (gformSheetId()&&!inArtifact())?"gform":null;
+  return (mcpNS&&padletUrl())?"padlet":null;
+}
+
+/* 두 출처가 함께 쓰는 마무리: 겹침·장난·지난 회의 표시를 붙여 체크 목록으로 */
+function showImported(m,kind,texts,meta){
+  const have=new Set(importTarget(m,kind)), prev=prevMeetingDate(m);
+  const jokeRe=/^[ㄱ-ㅎㅏ-ㅣ\s!?.~^;]+$/, seen=new Set(), items=[];
+  for(const {t:raw,day} of texts){
+    const t=String(raw||"").replace(/\s+/g," ").trim().slice(0,200);
+    if(!t||seen.has(t)) continue;
+    seen.add(t);
+    const dup=have.has(t), joke=jokeRe.test(t), old=!!(prev&&day&&day<=prev);
+    items.push({t, dup, joke, old, on:!dup&&!joke&&!old});
+  }
+  state.impItems=items;
+  state.impSrc=Object.assign({auto:true, total:items.length}, meta);
+  render();
+}
+
+function autoImport(){
+  if(state.impBusy) return;
+  const via=autoSource();
+  if(via==="gform") return gformImport();
+  if(via==="padlet") return padletImport();
+  if(useGform()&&inArtifact()){
+    state.impErr="앱 링크(claude.ai)에서는 구글 설문지를 읽을 수 없습니다. 내려받은 파일이나 GitHub 주소로 열어 주세요.";
+    render();
+  }
+}
+
+/* ---------- 구글 설문지 응답 시트 읽기 ----------
+   보통의 fetch 는 구글이 막는다(CORS). 스크립트로 불러오는 JSONP 는 파일·GitHub 어디서나 된다.
+   시트가 '링크가 있는 모든 사용자 · 뷰어'로 공유돼 있어야 하고, 아니면 스크립트 오류로 바로 끝난다. */
+let gvizSeq=0;
+function gvizLoad(sheetId){
+  return new Promise((res,rej)=>{
+    const cb="__jhGviz"+(++gvizSeq), s=document.createElement("script");
+    const done=()=>{ clearTimeout(timer); try{ delete window[cb]; }catch(e){ window[cb]=undefined; } s.remove(); };
+    const timer=setTimeout(()=>{ done(); rej({code:"timeout"}); },15000);
+    window[cb]=j=>{ done();
+      if(j&&j.status==="error"){
+        const e=(j.errors||[])[0]||{};
+        rej({code:"sheet", message:e.detailed_message||e.message||""});
+      } else res(j);
+    };
+    s.onerror=()=>{ done(); rej({code:"load"}); };
+    s.src=`https://docs.google.com/spreadsheets/d/${encodeURIComponent(sheetId)}/gviz/tq`
+      +`?tqx=out:json;responseHandler:${cb}&headers=1&_=${Date.now()}`;
+    document.head.appendChild(s);
+  });
+}
+function gvizCell(x){ return x==null?null:(x.v!=null?x.v:(x.f!=null?x.f:null)); }
+/* 응답 시각은 "Date(2026,8,30,10,22,37)" 모양이고 달은 0부터 센다 */
+function gvizDay(v){
+  const m=typeof v==="string"&&v.match(/^Date\((\d+),(\d+),(\d+)/);
+  return m?`${m[1]}-${String(+m[2]+1).padStart(2,"0")}-${String(m[3]).padStart(2,"0")}`:"";
+}
+/* 설문지는 두 가지 모양이 있다.
+   ① 화면마다 질문을 하나씩 — 질문 제목(예: '여는 놀이 발표하기')으로 화면을 정한다. 아이들이 쓰기 가장 쉽다.
+   ② 객관식으로 칸을 고르고 의견 하나 — 고른 값으로 화면을 정한다.
+   값만 보고 칸의 역할을 알아내므로, 선생님이 질문 제목을 자유롭게 지어도 된다. */
+function gformTable(j){
+  const t=j&&j.table; if(!t||!Array.isArray(t.cols)) return null;
+  let labels=t.cols.map(c=>String(c.label||"").trim());
+  let rows=(t.rows||[]).map(r=>(r.c||[]).map(gvizCell));
+  if(labels.every(l=>!l)&&rows.length){ labels=rows[0].map(v=>String(v??"").trim()); rows=rows.slice(1); }
+  const tsCol=labels.findIndex((_,i)=>rows.some(r=>gvizDay(r[i])));
+  const textVals=i=>rows.map(r=>r[i]).filter(v=>typeof v==="string"&&v.trim());
+  const isEmail=i=>{ const v=textVals(i); return v.length>0&&v.every(x=>/^[^\s@]+@[^\s@]+$/.test(x)); };
+  /* 값이 대부분 '여는 놀이·건의사항…' 같은 칸 이름이고 가짓수가 적으면 ②의 분류 칸이다 */
+  const isCatCol=i=>{
+    const v=textVals(i); if(!v.length) return false;
+    const hit=v.filter(x=>x.length<=10&&screenFromLabel(x)).length;
+    return new Set(v).size<=6 && hit>=v.length*0.8;
+  };
+  const cols=labels.map((_,i)=>i).filter(i=>i!==tsCol&&!isEmail(i));
+  const catCol=cols.find(isCatCol) ?? -1;
+
+  /* ① 질문 제목으로 화면이 정해지는 칸들 */
+  const topicCols={};
+  if(catCol<0) cols.forEach(i=>{
+    const k=screenFromLabel(labels[i]);
+    if(k) (topicCols[k]=topicCols[k]||[]).push(i);
+  });
+  /* ② 분류 칸 옆의 의견 칸 = 글이 가장 긴 칸 */
+  let opCol=-1, bestLen=0;
+  cols.forEach(i=>{
+    if(i===catCol) return;
+    const L=textVals(i).reduce((a,v)=>a+v.length,0);
+    if(L>bestLen){ bestLen=L; opCol=i; }
+  });
+  return {labels, rows, tsCol, catCol, opCol, topicCols};
+}
+function gformErrText(err){
+  switch(err&&err.code){
+    case "load": case "timeout":
+      return "응답 시트를 읽지 못했습니다. ① 시트 공유가 ‘링크가 있는 모든 사용자 · 뷰어’인지 ② 설정의 ‘응답 시트 주소’가 설문지가 아닌 시트 주소인지 ③ 인터넷 연결을 확인해 주세요.";
+    case "sheet": return "응답 시트를 읽지 못했습니다"+(err.message?` (${err.message})`:"")+".";
+    default: return "응답 시트를 읽지 못했습니다. 복사해서 붙여넣기로 가져와 주세요.";
+  }
+}
+async function gformImport(){
+  const m=current(), kind=state.impFor, id=gformSheetId();
+  Object.assign(state,{impBusy:true, impErr:""}); render();
+  let j;
+  try{ j=await gvizLoad(id); }
+  catch(err){ Object.assign(state,{impBusy:false, impErr:gformErrText(err)}); if(state.impOpen) render(); return; }
+  state.impBusy=false;
+  if(!state.impOpen||state.impFor!==kind) return;
+  const tb=gformTable(j);
+  const day=r=>tb.tsCol>=0?gvizDay(r[tb.tsCol]):"";
+  const ctx=PADLET_CTX[kind]||{};
+  if(!tb){ state.impErr="응답 시트를 알아보지 못했습니다. 복사해서 붙여넣기로 가져와 주세요."; render(); return; }
+
+  if(tb.catCol>=0&&tb.opCol>=0){                               /* ② 칸을 고르는 설문지 */
+    const rows=tb.rows.filter(r=>screenFromLabel(r[tb.catCol])===kind);
+    return showImported(m,kind, rows.map(r=>({t:r[tb.opCol], day:day(r)})),
+      {via:"gform", sec:GFORM_LABEL[kind]});
+  }
+  if(Object.keys(tb.topicCols).length){                        /* ① 화면마다 질문이 있는 설문지 */
+    const cs=tb.topicCols[kind]||[];
+    if(!cs.length){
+      state.impErr=`설문지에 이 화면(${ctx.name})에 맞는 질문이 없습니다. 질문 제목에 ‘${ctx.sec}’이(가) 들어가게 하면 여기로 가져옵니다.`;
+      render(); return;
+    }
+    const texts=[];
+    tb.rows.forEach(r=>cs.forEach(i=>{ if(r[i]!=null&&String(r[i]).trim()) texts.push({t:r[i], day:day(r)}); }));
+    return showImported(m,kind,texts,{via:"gform", sec:cs.map(i=>tb.labels[i]).join(", "), q:true});
+  }
+  if(tb.opCol>=0){                                             /* 구분 없는 설문지 — 전부 */
+    return showImported(m,kind, tb.rows.map(r=>({t:r[tb.opCol], day:day(r)})), {via:"gform", sec:null});
+  }
+  state.impErr="응답 시트에서 의견 칸을 찾지 못했습니다. 설문지에 글로 답하는 질문이 있는지 확인해 주세요.";
+  render();
+}
+
+async function padletImport(){
+  const m=current(), kind=state.impFor, url=padletUrl();
+  if(!mcpNS||!url) return;
+  Object.assign(state,{impBusy:true, impErr:""}); render();
+  const call=()=>mcpNS.callTool(PADLET_SERVER,"get_padlet_content",{wall_url:url},{cache:false});
+  let res;
+  try{
+    try{ res=await call(); }
+    catch(err){                                /* 잠깐 끊긴 경우만 한 번 더 */
+      if(!(err&&err.retryable)) throw err;
+      await new Promise(r=>setTimeout(r,(err.retryAfterMs||800)+Math.random()*800));
+      res=await call();
+    }
+  }catch(err){
+    const code=err&&err.code;
+    if(code==="not_granted"||code==="capability_disabled"||code==="capability_removed") mcpNS=null;
+    Object.assign(state,{impBusy:false, impErr:mcpErrText(err)});
+    if(state.impOpen) render();
+    return;
+  }
+  state.impBusy=false;
+  if(!state.impOpen||state.impFor!==kind){ return; }   /* 그새 창을 닫았거나 화면을 옮겼다 */
+  const data=padletData(res&&res.payload);
+  if(!data){ state.impErr="패들렛 내용을 알아보지 못했습니다. 복사해서 붙여넣기로 가져와 주세요."; render(); return; }
+
+  const secs=data.sections.filter(s=>screenFromLabel(s.section_title)===kind);
+  const secIds=new Set(secs.map(s=>String(s.section_id)));
+  let posts=data.posts.filter(p=>p&&p.is_published!==false);
+  /* 칸이 나뉜 패들렛인데 이 화면 칸만 없으면, 다른 칸 글을 쏟아 넣지 않고 알려 준다 */
+  if(data.sections.length&&!secIds.size){
+    const ctx=PADLET_CTX[kind]||{};
+    state.impErr=`패들렛에 이 화면(${ctx.name})에 맞는 칸이 없습니다. 칸 이름에 ‘${ctx.sec}’이(가) 들어가게 하면 여기로 가져옵니다.`;
+    render(); return;
+  }
+  if(secIds.size) posts=posts.filter(p=>secIds.has(String(p.section_id)));
+
+  /* 본문을 쓰고, 본문이 비었으면 제목을 쓴다. 작성자 이름은 칠판에 띄우지 않는다 */
+  showImported(m,kind,
+    posts.map(p=>({t:htmlText(p.body)||String(p.subject||""), day:p.published_at?localDay(p.published_at):""})),
+    {via:"padlet", sec:secIds.size?secs.map(s=>s.section_title).join(", "):null});
+}
+
+/* 패들렛에서 복사하면 글마다 '작성자 → 시간 → 본문 → 좋아요' 순서로 딸려 온다.
+   시간·좋아요·익명처럼 확실한 잡음은 버린다.
+   작성자 이름은 글자 수로는 가릴 수 없다('축구' '떡볶이' 같은 짧은 답이 흔하다). 그래서
+   '시간 줄 바로 앞에 오는 짧은 한글 줄'만 이름으로 보고 체크를 풀어 둔다.
+   시간이 아예 안 보이게 설정된 패들렛이면 가장 흔한 3글자 이름만 의심한다. */
+function parsePasted(text){
+  const TIME="(방금|just now|\\d+\\s*(초|분|시간|일|주|개월|년)\\s*전|\\d+\\s*(sec|min|hour|day|week|month|year)s?\\s*ago"
+    +"|\\d{1,2}:\\d{2}(\\s*[ap]m)?|\\d{4}[.\\-/]\\s*\\d{1,2}[.\\-/]\\s*\\d{1,2}.*)";
+  const timeRe=new RegExp("^"+TIME+"$","i");
+  const noise=new RegExp("^(" + [
+    "익명","anonymous", TIME,
+    "(좋아요|댓글|답글|likes?|comments?|repl(y|ies))\\s*\\d*",
+    "\\d+\\s*(좋아요|댓글|답글|likes?|comments?)",
+    "[가-힣A-Za-z]{1,10}\\s*[·•|]\\s*"+TIME,          /* '김민준 · 2분 전' 처럼 한 줄에 붙은 경우 */
+    "[\\d\\s]+"
+  ].join("|") + ")$","i");
+  const jokeRe=/^[ㄱ-ㅎㅏ-ㅣ\s!?.~^;]+$/;               /* ㅋㅋㅋ ㅎㅎ ㅠㅠ 처럼 자모만 있는 줄 */
+  const clean=l=>l.replace(/^\s*([-*•·▪◦►]|\d+[.)]|\(\d+\))\s*/,"").replace(/\s+/g," ").trim();
+  const lines=String(text||"").split(/\r?\n/).map(clean).filter(Boolean);
+  const hasTime=lines.some(l=>timeRe.test(l));
+  const seen=new Set(), out=[];
+  lines.forEach((t,i)=>{
+    if(t.length<2||noise.test(t)||seen.has(t)) return;
+    const name=hasTime
+      ? /^[가-힣]{2,4}$/.test(t) && timeRe.test(lines[i+1]||"")
+      : /^[가-힣]{3}$/.test(t);
+    seen.add(t); out.push({t, name, joke:jokeRe.test(t)});
+  });
+  return out;
+}
+
+function importTarget(m,kind){
+  if(kind==="suggest") return m.suggestions;
+  if(kind==="promise") return m.next.promises;
+  if(kind==="ice") return (m.iceAnswers=m.iceAnswers||[]);
+  if(kind==="review") return (m.reviewNotes=m.reviewNotes||[]);
+  if(kind==="goal") return (m.goalVote||[]).map(c=>c.t);
+  return [];
+}
+
+function applyImport(){
+  const m=current(), kind=state.impFor;
+  const picked=(state.impItems||[]).filter(x=>x.on).map(x=>x.t);
+  let n=0;
+  if(kind==="goal"){
+    m.goalVote=m.goalVote||[];
+    for(const t of picked){
+      if(m.goalVote.length>=8) break;
+      if(!m.goalVote.some(c=>c.t===t)){ m.goalVote.push({t,v:0}); n++; }
+    }
+  }else{
+    const arr=importTarget(m,kind);
+    for(const t of picked) if(!arr.includes(t)){ arr.push(t); n++; }
+  }
+  m.updatedAt=Date.now(); saveNow();
+  Object.assign(state,{impOpen:false,impItems:null});
+  if(kind==="review"&&n) state.reviewTab="notes";          /* 넣은 반성 의견을 바로 보여 준다 */
+  if(kind==="ice"&&n) state.iceMode="q";                   /* 여는 놀이 답은 '오늘의 질문' 아래에 뜬다 */
+  render();
+  const skipped=picked.length-n;
+  toast(n?`${n}개를 넣었습니다`+(skipped?` (겹치거나 자리가 없어 ${skipped}개는 뺐습니다)`:""):"새로 넣을 의견이 없었습니다");
+}
+
+/* ==================== 여는 놀이 ====================
+   놀이 고르기 판 → 놀이 하나. 아이스브레이킹 놀이상자의 놀이(질문 카드 · 초성 · 몸으로 말해요 · 텔레파시 · 짝·모둠)를
+   합쳤고, 회의 전에 하기 좋은 네 가지(밸런스 · 가위바위보 · OX · 사라진 그림)를 더했다.
+   타이머는 iceTimer 하나만 쓰고, 여는 놀이 화면을 벗어나면 render 가 멈춘다. */
+const ICE_GAMES=[
+  {id:"q",    emo:"💬", name:"오늘의 질문",      desc:"질문에 답하며 서로 알아가기"},
+  {id:"bal",  emo:"⚖️", name:"밸런스 게임",      desc:"둘 중 하나! 고르고 이유 말하기"},
+  {id:"rps",  emo:"✊", name:"화면과 가위바위보", desc:"화면을 이기고 끝까지 살아남기"},
+  {id:"ox",   emo:"⭕", name:"OX 퀴즈",         desc:"학교생활 상식, 팔로 O · X"},
+  {id:"cho",  emo:"🔤", name:"초성 퀴즈",        desc:"초성만 보고 낱말 맞히기"},
+  {id:"miss", emo:"🔍", name:"사라진 그림 찾기",  desc:"무엇이 없어졌을까?"},
+  {id:"act",  emo:"🎭", name:"몸으로 말해요",     desc:"말없이 몸으로만 설명하기"},
+  {id:"tele", emo:"📡", name:"텔레파시",         desc:"하나 둘 셋! 같은 낱말 떠올리기"},
+  {id:"draw", emo:"👥", name:"짝 · 모둠 정하기",  desc:"한 명 · 짝 · 모둠 뽑기"}
+];
+/* 몸으로 말해요 제시어 — 놀이상자 그대로 */
+const ACT_WORDS=[
+  {c:"동물", w:["코끼리","기린","펭귄","캥거루","원숭이","토끼","사자","개구리","뱀","독수리","거북이","다람쥐","하마","오리","고양이","돼지","닭","말"]},
+  {c:"직업", w:["소방관","요리사","의사","경찰관","가수","축구 선수","화가","미용사","농부","우주 비행사","사진작가","마술사","선생님","버스 기사","야구 선수","발레리나"]},
+  {c:"학교생활", w:["줄넘기","급식 먹기","칠판 지우기","청소하기","실내화 갈아 신기","발표하기","손 들기","가방 메기","이어달리기","줄 서기","책 읽기","시험 보기","짝과 인사하기","우유 마시기"]},
+  {c:"음식", w:["라면 먹기","아이스크림 먹기","수박 먹기","피자 먹기","김밥 말기","치킨 뜯기","팝콘 먹기","솜사탕 먹기","뜨거운 국 먹기","매운 떡볶이 먹기","젓가락질하기"]},
+  {c:"행동", w:["이 닦기","세수하기","우산 쓰기","자전거 타기","수영하기","잠자기","깜짝 놀라기","사진 찍기","계단 오르기","무거운 짐 들기","신발 끈 묶기","춤추기","박수 치기","재채기하기","안경 닦기","전화 받기"]}
+];
+/* 사라진 그림 찾기 — 초등학생이 이름을 바로 말할 수 있는 그림만 */
+const MISS_POOL=[["🍎","사과"],["🍌","바나나"],["🍉","수박"],["🍓","딸기"],["🍇","포도"],["🥕","당근"],["🍞","빵"],
+  ["🍩","도넛"],["🍦","아이스크림"],["🍕","피자"],["🐶","강아지"],["🐱","고양이"],["🐰","토끼"],["🐻","곰"],
+  ["🐼","판다"],["🐯","호랑이"],["🐸","개구리"],["🐧","펭귄"],["🦒","기린"],["🐘","코끼리"],["⚽","축구공"],
+  ["🏀","농구공"],["🚲","자전거"],["🚗","자동차"],["🚌","버스"],["✈️","비행기"],["🚀","로켓"],["⛵","돛단배"],
+  ["🎸","기타"],["🎈","풍선"],["🎁","선물"],["📚","책"],["✏️","연필"],["✂️","가위"],["⏰","시계"],["☂️","우산"],
+  ["👑","왕관"],["🌻","해바라기"],["🌈","무지개"],["⭐","별"],["🌙","달"],["☀️","해"]];
+const RPS=[{e:"✌️",n:"가위"},{e:"✊",n:"바위"},{e:"🖐️",n:"보"}];
+
+function shuffleArr(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* 효과음 — 앱 링크를 Claude 앱 안에서 열면 소리가 막히므로 조용히 넘어간다 */
+let iceAudio=null;
+function iceBeep(freq,dur,type){
+  if(!db.settings.iceSound) return;
+  try{
+    if(!iceAudio){ const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return; iceAudio=new AC(); }
+    if(iceAudio.state==="suspended") iceAudio.resume();
+    const o=iceAudio.createOscillator(), g=iceAudio.createGain(), t=iceAudio.currentTime;
+    o.type=type||"sine"; o.frequency.value=freq;
+    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.16,t+.01); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g); g.connect(iceAudio.destination); o.start(t); o.stop(t+dur+.02);
+  }catch(e){}
+}
+
+let iceTimer=null;
+/* 진행 중인 카운트다운을 멈추고, 도중에 끊긴 놀이는 시작 전 상태로 되돌린다 */
+function iceStop(){
+  if(iceTimer){ clearInterval(iceTimer); clearTimeout(iceTimer); iceTimer=null; }
+  if(state.rps.phase==="count") state.rps.phase=state.rps.round?"show":"idle";
+  if(state.miss.phase==="show") state.miss.phase="idle";
+  if(state.act.phase==="play") state.act.phase="setup";
+  if(state.tele.phase==="count") state.tele.phase="topic";
+}
+const onIceSlide=()=>state.view==="run"&&(steps()[state.step]||{}).id==="ice";
+
+function iceSlide(m){
+  const mode=state.iceMode||"menu";
+  if(mode==="menu") return `<h2>여는 놀이</h2>
+    <p class="lead ice-sub">오늘은 어떤 놀이로 시작할까요?</p>
+    <div class="icegrid">${ICE_GAMES.map(g=>`
+      <button class="icegame" data-act="ice-go" data-k="${g.id}">
+        <span class="ig-emo" aria-hidden="true">${g.emo}</span>
+        <span class="ig-name">${esc(g.name)}</span>
+        <span class="ig-desc">${esc(g.desc)}</span></button>`).join("")}</div>`;
+  const g=ICE_GAMES.find(x=>x.id===mode)||ICE_GAMES[0];
+  return `<div class="icehead">
+      <button class="b-btn" data-act="ice-menu">← 놀이 고르기</button>
+      <h2 class="iceh2"><span aria-hidden="true">${g.emo}</span> ${esc(g.name)}</h2>
+    </div>
+    ${iceBody(m,mode)}`;
+}
+
+function iceBody(m,mode){
+  const s=db.settings;
+  switch(mode){
+  case "q": {
+    const qs=s.questions||[], q=qs.length?qs[(state.iceQ||0)%qs.length]:"", ans=m.iceAnswers||[];
+    return `<div class="icecard big">${q?esc(q):`<span style="color:var(--chalk-3)">설정에서 질문을 넣어 주세요</span>`}</div>
+      <div class="addrow">
+        <button class="b-btn draw-go ice-primary" data-act="ice-next">다음 질문</button>
+        <button class="b-btn" data-act="draw-open">번호 뽑아 발표하기</button>
+      </div>
+      ${ans.length?`<div class="iceans">${ans.map(a=>`<span class="iceans-i">${esc(a)}</span>`).join("")}</div>
+        <div><button class="b-btn" data-act="ice-clear" style="font-size:.8rem">답 지우기</button></div>`:""}`;
+  }
+  case "cho": {
+    const qz=s.quiz||[], raw=qz.length?qz[(state.iceC||0)%qz.length]:"";
+    const [ans,hint]=String(raw).split("|"), word=(ans||"").trim(), shown=state.iceShow;
+    const bits=[hint?"힌트 · "+esc(hint.trim()):"", word.replace(/\s/g,"").length+"글자",
+      state.iceFirst&&!shown?`첫 글자 ‘${esc(word.charAt(0))}’`:""].filter(Boolean).join(" · ");
+    return `<div class="icecho">${esc(toCho(word))}</div>
+      <p class="lead ice-c">${bits}</p>
+      <div class="icecard${shown?"":" veiled"}">${shown?esc(word):"정답 가림"}</div>
+      <div class="addrow">
+        <button class="b-btn draw-go ice-primary" data-act="ice-show">${shown?"다음 문제":"정답 보기"}</button>
+        ${shown?"":`<button class="b-btn" data-act="ice-first"${state.iceFirst?" disabled":""}>첫 글자 힌트</button>`}
+        <button class="b-btn" data-act="draw-open">번호 뽑기</button>
+      </div>`;
+  }
+  case "bal": {
+    const L=s.balance||[], raw=L.length?L[state.bal.i%L.length]:"왼쪽|오른쪽";
+    const [A,B]=String(raw).split("|").map(x=>(x||"").trim());
+    return `<div class="balwrap">
+        ${balCard("a",A)}<div class="balvs">VS</div>${balCard("b",B)}
+      </div>
+      <div class="meter" id="bal-meter" role="img">${balMeter()}</div>
+      <div class="meter-note"><span>1 키 · 왼쪽</span><span id="bal-tot">모두 ${state.bal.a+state.bal.b}명</span><span>2 키 · 오른쪽</span></div>
+      <div class="addrow">
+        <button class="b-btn draw-go" data-act="draw-open">번호 뽑아 이유 듣기</button>
+        <button class="b-btn ice-primary" data-act="bal-next">다음 문제</button>
+      </div>`;
+  }
+  case "rps": {
+    const r=state.rps; let big;
+    if(r.phase==="count") big=`<div class="rpscount" id="rps-word">${esc(r.word)}</div>`;
+    else if(r.phase==="show"){
+      const H=RPS[r.hand], W=RPS[(r.hand+1)%3];
+      big=`<div class="rpsbig pop">${H.e}</div>
+        <p class="rpsname">화면은 <b>${H.n}</b>!</p>
+        <p class="lead ice-c"><b>${W.e} ${W.n}</b>를 낸 사람이 이겼어요. 진 사람과 비긴 사람은 앉아요.</p>`;
+    } else big=`<div class="rpsbig">✌️ ✊ 🖐️</div>
+        <p class="lead ice-c">모두 일어나세요! 화면과 가위바위보를 해요. 끝까지 서 있는 친구가 오늘의 첫 발표자!</p>`;
+    return `<div class="icecenter">${big}</div>
+      <div class="addrow" style="justify-content:center">
+        <button class="b-btn draw-go ice-primary" data-act="rps-go"${r.phase==="count"?" disabled":""}>${r.round?"한 번 더!":"가위바위보!"}</button>
+        ${r.round?`<span class="drawmeta">${r.round}판째</span><button class="b-btn" data-act="rps-reset">처음부터</button>`:""}
+      </div>`;
+  }
+  case "ox": {
+    const L=s.ox||[]; if(!L.length) return `<p class="lead">설정에서 OX 문제를 넣어 주세요.</p>`;
+    const [q,a,ex]=String(L[state.ox.i%L.length]).split("|"), O=String(a||"").trim().toUpperCase()!=="X";
+    return `<div class="icecard big">${esc((q||"").trim())}</div>
+      ${state.ox.show
+        ? `<div class="oxrow"><div class="oxans ${O?"o":"x"} pop">${O?"O":"X"}</div>${ex&&ex.trim()?`<p class="lead">${esc(ex.trim())}</p>`:""}</div>`
+        : `<p class="lead ice-c">맞으면 두 팔로 <b>O</b>, 틀리면 <b>X</b>! 틀린 사람은 앉아요.</p>`}
+      <div class="addrow" style="justify-content:center">
+        <button class="b-btn draw-go ice-primary" data-act="ox-go">${state.ox.show?"다음 문제":"정답 보기"}</button>
+        <span class="drawmeta">${state.ox.i%L.length+1} / ${L.length}</span>
+      </div>`;
+  }
+  case "miss": return missBody();
+  case "act":  return actBody();
+  case "tele": return teleBody();
+  }
+  return "";
+}
+
+/* ---- 밸런스 게임 ---- */
+function balCard(k,txt){
+  const b=state.bal, v=b[k], lead=(b.a!==b.b)&&v===Math.max(b.a,b.b);
+  return `<div class="balcard ${k}${lead?" lead":""}" id="bal-card-${k}">
+    <div class="baltxt">${esc(txt)}</div>
+    <div class="balnum mono" id="bal-${k}">${v}</div>
+    <div class="gv-pm">
+      <button data-act="bal" data-k="${k}" data-d="-1" aria-label="한 명 빼기">−</button>
+      <button data-act="bal" data-k="${k}" data-d="1" aria-label="한 명 더하기">+</button>
+    </div></div>`;
+}
+function balMeter(){
+  const {a,b}=state.bal;
+  return (a+b)
+    ? `<span style="flex:${a} 1 0;background:var(--bal-a);min-width:${a?"6px":"0"}"></span><span style="flex:${b} 1 0;background:var(--bal-b);min-width:${b?"6px":"0"}"></span>`
+    : `<span style="flex:1;background:var(--board-line)"></span>`;
+}
+/* 손을 셀 때마다 화면 전체를 다시 그리면 깜빡이므로 숫자와 막대만 고친다 */
+function balBump(k,d){
+  const b=state.bal; b[k]=Math.max(0,b[k]+d);
+  const n=$("#bal-"+k); if(n) n.textContent=b[k];
+  const mt=$("#bal-meter"); if(mt) mt.innerHTML=balMeter();
+  const t=$("#bal-tot"); if(t) t.textContent=`모두 ${b.a+b.b}명`;
+  ["a","b"].forEach(x=>{ const c=$("#bal-card-"+x); if(c) c.classList.toggle("lead",b.a!==b.b&&b[x]===Math.max(b.a,b.b)); });
+}
+
+/* ---- 가위바위보 ---- */
+function rpsGo(){
+  const r=state.rps; if(r.phase==="count") return;
+  iceStop(); r.phase="count"; r.word="가위!"; render(); iceBeep(520,.1);
+  const words=["바위!","보!"]; let i=0;
+  const step=()=>{
+    if(i<words.length){
+      r.word=words[i++]; const w=$("#rps-word");
+      if(w){ w.textContent=r.word; w.classList.remove("pop"); void w.offsetWidth; w.classList.add("pop"); }
+      iceBeep(620+i*120,.1); iceTimer=setTimeout(step,560);
+    } else {
+      iceTimer=null; r.hand=Math.floor(Math.random()*3); r.round++; r.phase="show";
+      render(); iceBeep(880,.12); setTimeout(()=>iceBeep(1175,.2),120);
+    }
+  };
+  iceTimer=setTimeout(step,560);
+}
+
+/* ---- 사라진 그림 찾기 ---- */
+function missBody(){
+  const x=state.miss;
+  if(x.phase==="idle") return `<p class="lead ice-c">그림 8개를 잠깐 보여 줄게요. 잘 기억해 두었다가, 사라진 하나를 맞혀 보세요!</p>
+    <div class="icetabs" style="justify-content:center">
+      <button class="icetab${!x.hard?" on":""}" data-act="miss-hard" data-k="0">쉬움 · 8초 · 자리 그대로</button>
+      <button class="icetab${x.hard?" on":""}" data-act="miss-hard" data-k="1">어려움 · 5초 · 자리 섞기</button>
+    </div>
+    <div class="addrow" style="justify-content:center"><button class="b-btn draw-go ice-primary" data-act="miss-go">시작</button></div>`;
+  const cell=(pi,cls)=>`<div class="misscell${cls||""}"><span class="e">${MISS_POOL[pi][0]}</span><span class="n">${MISS_POOL[pi][1]}</span></div>`;
+  const q=`<div class="misscell q"><span class="e">?</span><span class="n">&nbsp;</span></div>`;
+  const gone=x.items[x.gone];
+  if(x.phase==="show") return `<p class="lead ice-c">잘 기억하세요! <b class="missleft" id="miss-left">${x.left}</b>초</p>
+    <div class="missgrid">${x.items.map(pi=>cell(pi)).join("")}</div>`;
+  const ans=x.phase==="answer";
+  const grid=x.hard
+    ? x.order.map(pi=>cell(pi)).join("")+(ans?cell(gone," hit"):"")
+    : x.items.map((pi,i)=>i===x.gone?(ans?cell(pi," hit"):q):cell(pi)).join("");
+  return `<p class="lead ice-c">${ans?`정답은 <b>${MISS_POOL[gone][0]} ${MISS_POOL[gone][1]}</b>!`:"무엇이 사라졌을까요? 아는 사람은 손을 들어요."}</p>
+    <div class="missgrid">${grid}</div>
+    <div class="addrow" style="justify-content:center">
+      ${ans?`<button class="b-btn draw-go ice-primary" data-act="miss-go">한 번 더</button>`
+           :`<button class="b-btn draw-go ice-primary" data-act="miss-ans">정답 보기</button>
+             <button class="b-btn" data-act="draw-open">번호 뽑기</button>`}
+    </div>`;
+}
+function missGo(){
+  iceStop();
+  const x=state.miss, pick=shuffleArr(MISS_POOL.map((_,i)=>i)).slice(0,8);
+  Object.assign(x,{phase:"show", items:pick, gone:Math.floor(Math.random()*8), left:x.hard?5:8});
+  x.order=shuffleArr(pick.filter((_,i)=>i!==x.gone));
+  render(); iceBeep(700,.08);
+  iceTimer=setInterval(()=>{
+    x.left--; const el=$("#miss-left"); if(el) el.textContent=x.left;
+    if(x.left<=3&&x.left>0) iceBeep(560,.06,"triangle");
+    if(x.left<=0){ clearInterval(iceTimer); iceTimer=null; x.phase="guess"; render(); iceBeep(880,.14); }
+  },1000);
+}
+
+/* ---- 몸으로 말해요 ---- */
+function actBody(){
+  const a=state.act, cats=["전체"].concat(ACT_WORDS.map(g=>g.c));
+  if(a.phase==="play") return `<div class="icecenter">
+      <p class="eyebrow" id="act-cat">${esc(a.cur.c)}</p>
+      <div class="actword pop" id="act-word">${esc(a.cur.w)}</div>
+      <div class="actrow">
+        <div class="acttime mono" id="act-left">${a.left}</div>
+        <div class="actscore"><b class="mono" id="act-hit">${a.log.filter(x=>x.hit).length}</b><span>맞힘</span></div>
+        <div class="actscore"><b class="mono" id="act-pass">${a.log.filter(x=>!x.hit).length}</b><span>통과</span></div>
+      </div></div>
+    <div class="addrow" style="justify-content:center">
+      <button class="b-btn draw-go ice-primary" data-act="act-hit">정답</button>
+      <button class="b-btn" data-act="act-pass">통과 (→)</button>
+      <button class="b-btn" data-act="act-end">그만하기</button>
+    </div>`;
+  if(a.phase==="end"){
+    const hits=a.log.filter(x=>x.hit).length;
+    return `<div class="icecenter">
+        <p class="eyebrow">시간 끝</p>
+        <div class="actword">${hits}개 성공!</div>
+        ${a.log.length?`<div class="actlist">${a.log.map(x=>`<span class="${x.hit?"":"miss"}">${esc(x.w)}</span>`).join("")}</div>`:""}
+        <p class="lead ice-c">줄이 그어진 낱말은 통과한 제시어예요. 다음 모둠이 이어서 도전해 보세요.</p>
+      </div>
+      <div class="addrow" style="justify-content:center">
+        <button class="b-btn draw-go ice-primary" data-act="act-start">다시 시작</button>
+        <button class="b-btn" data-act="act-setup">분야 · 시간 바꾸기</button>
+      </div>`;
+  }
+  return `<p class="lead ice-c">설명하는 사람은 화면을 보고 몸으로만 설명하고, 맞히는 모둠은 소리 내어 맞혀요.</p>
+    <div class="icetabs" style="justify-content:center">${cats.map(c=>`<button class="icetab${a.cat===c?" on":""}" data-act="act-cat" data-k="${esc(c)}">${esc(c)}</button>`).join("")}</div>
+    <div class="icetabs" style="justify-content:center">${[60,90,120].map(n=>`<button class="icetab${a.sec===n?" on":""}" data-act="act-sec" data-k="${n}">${n}초</button>`).join("")}</div>
+    <div class="addrow" style="justify-content:center"><button class="b-btn draw-go ice-primary" data-act="act-start">시작</button></div>`;
+}
+function actPool(){
+  const a=state.act, gs=a.cat==="전체"?ACT_WORDS:ACT_WORDS.filter(g=>g.c===a.cat), out=[];
+  gs.forEach(g=>g.w.forEach(w=>out.push({w,c:g.c})));
+  return shuffleArr(out);
+}
+function actNext(){
+  const a=state.act; if(!a.pool.length) a.pool=actPool();
+  a.cur=a.pool.pop();
+  const w=$("#act-word"), c=$("#act-cat");
+  if(w){ w.textContent=a.cur.w; w.classList.remove("pop"); void w.offsetWidth; w.classList.add("pop"); }
+  if(c) c.textContent=a.cur.c;
+}
+function actStart(){
+  iceStop();
+  const a=state.act; Object.assign(a,{phase:"play", left:a.sec, log:[], pool:actPool()});
+  a.cur=a.pool.pop(); render(); iceBeep(880,.12);
+  iceTimer=setInterval(()=>{
+    a.left--; const el=$("#act-left"); if(el) el.textContent=a.left;
+    if(a.left<=5&&a.left>0) iceBeep(560,.07,"triangle");
+    if(a.left<=0) actEnd();
+  },1000);
+}
+function actMark(hit){
+  const a=state.act; if(a.phase!=="play"||!a.cur) return;
+  a.log.push({w:a.cur.w,hit});
+  const h=$("#act-hit"), p=$("#act-pass"), n=a.log.filter(x=>x.hit).length;
+  if(h) h.textContent=n; if(p) p.textContent=a.log.length-n;
+  iceBeep(hit?940:320,.07,hit?"sine":"square"); actNext();
+}
+function actEnd(){
+  if(iceTimer){ clearInterval(iceTimer); iceTimer=null; }
+  state.act.phase="end"; render(); iceBeep(520,.14); setTimeout(()=>iceBeep(392,.26),160);
+}
+
+/* ---- 텔레파시 ---- */
+function teleBody(){
+  const t=state.tele, L=db.settings.tele||[], topic=L.length?L[t.i%L.length]:"";
+  if(t.phase==="idle") return `<div class="icecenter">
+      <p class="lead ice-c">주제를 보고 떠오르는 낱말 하나를 마음속에 정해요. 하나 둘 셋! 하면 모두 한꺼번에 말해요.
+        같은 낱말이 많이 나올수록 우리 반은 찰떡궁합!</p></div>
+    <div class="addrow" style="justify-content:center"><button class="b-btn draw-go ice-primary" data-act="tele-topic">주제 뽑기</button></div>`;
+  if(t.phase==="count") return `<div class="icecenter"><p class="eyebrow">${esc(topic)}</p>
+      <div class="telebig pop" id="tele-n">${t.n}</div></div>`;
+  const say=t.phase==="say";
+  return `<div class="icecenter">
+      <p class="eyebrow">${say?"같은 낱말이 나왔나요?":"이번 주제"}</p>
+      <div class="${say?"telebig pop":"icecard big"}">${say?"말해요!":esc(topic)}</div>
+      ${say?`<p class="lead ice-c">${esc(topic)}</p>`:`<p class="lead ice-c">떠오르는 낱말을 정했나요? 준비되면 하나 둘 셋!</p>`}</div>
+    <div class="addrow" style="justify-content:center">
+      ${say?`<button class="b-btn draw-go ice-primary" data-act="tele-topic">다음 주제</button>`
+           :`<button class="b-btn draw-go ice-primary" data-act="tele-go">하나 둘 셋!</button>
+             <button class="b-btn" data-act="tele-topic">다른 주제</button>`}
+    </div>`;
+}
+function teleGo(){
+  iceStop(); const t=state.tele; t.phase="count"; t.n=3; render(); iceBeep(520,.1);
+  iceTimer=setInterval(()=>{
+    t.n--;
+    if(t.n>0){ const el=$("#tele-n"); if(el){ el.textContent=t.n; el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); } iceBeep(520+(3-t.n)*130,.1); }
+    else { clearInterval(iceTimer); iceTimer=null; t.phase="say"; render(); iceBeep(880,.14); setTimeout(()=>iceBeep(1175,.26),140); }
+  },1000);
+}
+
+/* ==================== 뽑기 (한 명 · 짝 · 모둠) ====================
+   설정에 명단을 넣으면 이름으로, 비워 두면 참석 인원만큼 번호로 뽑는다.
+   한 번 나온 사람은 다시 안 나오게 해서 골고루 돌아가게 한다 */
+function rosterNames(){ return String(db.settings.roster||"").split(/[\n,]/).map(x=>x.trim()).filter(Boolean); }
+function drawPool(m){
+  const names=rosterNames();
+  if(names.length) return {labels:names, names:true};
+  const N=Math.max(0,parseInt(m.attendance,10)||0);
+  return {labels:Array.from({length:N},(_,i)=>String(i+1)), names:false};
+}
+
 function drawHTML(m){
   if(!state.drawOpen) return "";
-  const N=Math.max(0,parseInt(m.attendance,10)||0);
-  const used=state.drawUsed||[];
+  const P=drawPool(m), total=P.labels.length, mode=state.drawMode||"one";
+  const used=(state.drawUsed||[]).filter(x=>P.labels.includes(x));
+  const res=state.drawResult&&state.drawResult.mode===mode?state.drawResult:null;
+  const seg=(k,t)=>`<button class="icetab${mode===k?" on":""}" data-act="draw-mode" data-k="${k}">${t}</button>`;
+  let body;
+  if(total<1) body=`<p class="lead">먼저 참석 인원을 정해 주세요.</p>
+      <div class="addrow"><input class="b-inp" type="number" min="1" value="20" id="draw-n" style="max-width:6em">
+      <button class="b-btn draw-go" data-act="draw-setn">이 인원으로</button></div>`;
+  else if(mode==="group") body=`
+      <div class="addrow" style="justify-content:center;align-items:center">
+        <span class="drawmeta">모둠 수</span>
+        <button class="b-btn" data-act="draw-gk" data-d="-1" aria-label="모둠 줄이기">−</button>
+        <b class="mono dgk">${state.drawGroups}</b>
+        <button class="b-btn" data-act="draw-gk" data-d="1" aria-label="모둠 늘리기">+</button>
+      </div>
+      ${res?`<div class="dgroups">${res.groups.map((g,i)=>`<div class="dgroup pop"><h4>${i+1}모둠 · ${g.length}명</h4><p>${g.map(esc).join(", ")}</p></div>`).join("")}</div>`
+           :`<p class="drawmeta">${total}명을 ${state.drawGroups}개 모둠으로 고르게 나눕니다.</p>`}
+      <div class="addrow" style="justify-content:center">
+        <button class="b-btn draw-go" data-act="draw-pick">${res?"다시 나누기":"모둠 나누기"}</button></div>`;
+  else {
+    const pair=mode==="pair", p=res?res.picks:null;
+    body=`<div class="drawnums${P.names?" names":""}">
+        <div class="drawnum${res?" settled":""}" id="drawnum0">${p?esc(p[0]):"?"}</div>
+        ${pair?`<span class="drawplus">+</span><div class="drawnum${res?" settled":""}" id="drawnum1">${p?esc(p[1]):"?"}</div>`:""}
+      </div>
+      <p class="drawmeta">${P.names?`명단 ${total}명`:`1~${total}번`} · 남은 <b>${total-used.length}</b>명
+        <span class="drawused">${used.length?(P.names?"이미 나온 사람 ":"이미 나온 번호 ")+used.map(esc).join(", "):""}</span></p>
+      <div class="addrow" style="justify-content:center">
+        <button class="b-btn draw-go" data-act="draw-pick">${res?"다시 뽑기":pair?"짝 뽑기":"뽑기"}</button>
+        <button class="b-btn" data-act="draw-reset">처음부터</button>
+      </div>`;
+  }
   return `<div class="drawwrap">
-    <div class="drawbox">
-      <div class="eyebrow">번호 뽑기</div>
-      ${N<1
-        ? `<p class="lead">먼저 참석 인원을 정해 주세요.</p>
-           <div class="addrow"><input class="b-inp" type="number" min="1" value="20" id="draw-n" style="max-width:6em">
-           <button class="b-btn draw-go" data-act="draw-setn">이 인원으로</button></div>`
-        : `<div class="drawnum" id="drawnum">${state.drawn||"?"}</div>
-           <p class="drawmeta">1~${N}번 · 남은 번호 <b id="drawleft">${N-used.length}</b>명
-             <span class="drawused" id="drawused">${used.length?"이미 나온 번호 "+used.join(", "):""}</span></p>
-           <div class="addrow">
-             <button class="b-btn draw-go" data-act="draw-pick">${state.drawn?"다시 뽑기":"뽑기"}</button>
-             <button class="b-btn" data-act="draw-reset">처음부터</button>
-           </div>`}
+    <div class="drawbox${mode==="group"?" wide":""}">
+      <div class="eyebrow">${P.names?"이름":"번호"} 뽑기</div>
+      <div class="icetabs" style="justify-content:center">${seg("one","한 명")}${seg("pair","짝")}${seg("group","모둠")}</div>
+      ${body}
       <button class="b-btn drawclose" data-act="draw-close">닫기 (Esc)</button>
     </div>
   </div>`;
@@ -975,29 +2098,42 @@ function drawHTML(m){
 
 let drawTimer=null;
 function pickNumber(){
-  const m=current(); if(!m) return;
-  const N=Math.max(0,parseInt(m.attendance,10)||0);
-  state.drawUsed=state.drawUsed||[];
-  const pool=[];
-  for(let i=1;i<=N;i++) if(!state.drawUsed.includes(i)) pool.push(i);
-  if(!pool.length){ toast("모든 번호가 나왔습니다. ‘처음부터’를 눌러 주세요"); return; }
-  const win=pool[Math.floor(Math.random()*pool.length)];
-  const el=$("#drawnum");
+  const m=current(); if(!m||drawTimer) return;
+  const P=drawPool(m), mode=state.drawMode||"one";
+  if(!P.labels.length) return;
+  if(mode==="group"){
+    const k=Math.max(2,Math.min(10,state.drawGroups||4));
+    if(P.labels.length<k){ toast("모둠 수보다 사람이 많아야 합니다"); return; }
+    const groups=Array.from({length:k},()=>[]);
+    shuffleArr(P.labels).forEach((x,i)=>groups[i%k].push(x));
+    /* 번호는 모둠 안에서 작은 순서로 보여야 읽기 쉽다 */
+    if(!P.names) groups.forEach(g=>g.sort((a,b)=>a-b));
+    state.drawResult={mode:"group", groups};
+    render(); iceBeep(660,.12); setTimeout(()=>iceBeep(880,.16),120);
+    return;
+  }
+  const need=mode==="pair"?2:1;
+  state.drawUsed=(state.drawUsed||[]).filter(x=>P.labels.includes(x));
+  const pool=P.labels.filter(x=>!state.drawUsed.includes(x));
+  if(pool.length<need){
+    toast(P.labels.length<need?"짝을 정하려면 두 명 넘게 있어야 합니다":"모두 한 번씩 나왔습니다. ‘처음부터’를 눌러 주세요");
+    return;
+  }
+  const picks=shuffleArr(pool).slice(0,need);
+  const els=[$("#drawnum0"),$("#drawnum1")].slice(0,need);
   const finish=()=>{
     clearInterval(drawTimer); drawTimer=null;
-    state.drawn=win; state.drawUsed.push(win);
-    if(!el){ render(); return; }
-    el.textContent=win; el.classList.remove("rolling");
-    el.classList.remove("settled"); void el.offsetWidth; el.classList.add("settled");
-    const l=$("#drawleft"); if(l) l.textContent=N-state.drawUsed.length;
-    const u=$("#drawused"); if(u) u.textContent="이미 나온 번호 "+state.drawUsed.join(", ");
-    const b=document.querySelector('[data-act="draw-pick"]'); if(b) b.textContent="다시 뽑기";
+    state.drawUsed.push(...picks); state.drawResult={mode, picks};
+    render(); iceBeep(700,.1); setTimeout(()=>iceBeep(1050,.2),110);
   };
-  if(!el||matchMedia("(prefers-reduced-motion: reduce)").matches){ finish(); return; }
-  clearInterval(drawTimer);
-  el.classList.add("rolling");
-  drawTimer=setInterval(()=>{ el.textContent=pool[Math.floor(Math.random()*pool.length)]; },70);
-  setTimeout(finish,900);
+  if(!els[0]||matchMedia("(prefers-reduced-motion: reduce)").matches){ finish(); return; }
+  els.forEach(e=>{ if(e){ e.classList.remove("settled"); e.classList.add("rolling"); } });
+  let ticks=0;
+  drawTimer=setInterval(()=>{
+    els.forEach(e=>{ if(e) e.textContent=pool[Math.floor(Math.random()*pool.length)]; });
+    if(++ticks%3===0) iceBeep(430+Math.random()*280,.03,"square");
+    if(ticks>=13) finish();
+  },70);
 }
 
 function vt(k,label,color,val,key){
@@ -1012,7 +2148,11 @@ function vt(k,label,color,val,key){
   </div>`;
 }
 
-function plistClass(n){ return "plist"+(n>7?" lots":n>4?" many":""); }
+/* tight: 위에 목표 띠가 붙는 실천내용 화면은 한 단계 일찍 줄인다 */
+function plistClass(n,tight){
+  const a=tight?3:4, b=tight?4:7;
+  return "plist"+(n>b?" lots":n>a?" many":"");
+}
 
 function listItems(arr,kind){
   if(!arr.length) return `<li style="border-style:dashed;color:var(--chalk-3);justify-content:center">아직 없습니다</li>`;
@@ -1205,17 +2345,102 @@ function viewSettings(){
           전자칠판에서는 진행 화면 아래쪽 <b>+</b> 단추나 키보드 <b>+ / −</b> 로도 바로 조절할 수 있습니다.</p>
         </div>
 
+      <div class="set-block"><h3>학생 의견 받기</h3>
+        <div class="field"><span class="flabel">학생들이 의견을 올리는 곳</span>
+          <div class="seg" role="radiogroup" aria-label="학생들이 의견을 올리는 곳">
+            <label><input type="radio" name="s-src" value="padlet" data-set-radio="source"${s.source!=="gform"?" checked":""}>
+              <span><b>패들렛</b><small>앱 링크에서 자동 · 파일에선 붙여넣기</small></span></label>
+            <label><input type="radio" name="s-src" value="gform" data-set-radio="source"${s.source==="gform"?" checked":""}>
+              <span><b>구글 설문지</b><small>파일 · GitHub에서 자동 · Claude 계정 필요 없음</small></span></label>
+          </div></div>
+      </div>
+
+      <div class="set-block"${s.source==="gform"?" hidden":""}><h3>패들렛</h3>
+        <div class="field"><label for="s-padlet">우리 반 패들렛 주소</label>
+          <input class="inp mono" id="s-padlet" value="${esc(s.padletUrl||"")}" data-set="padletUrl"
+            placeholder="https://padlet.com/..." inputmode="url" autocomplete="off"></div>
+        <ol style="font-size:.88rem;color:var(--ink-2);margin:.8rem 0 0;padding-left:1.2rem;line-height:1.75">
+          <li>패들렛 오른쪽 위 <b>공유</b> → <b>링크 복사</b>로 얻은 주소를 위 칸에 붙여넣습니다.</li>
+          <li>같은 공유 메뉴에서 <b>링크가 있는 사람</b>을 <b>작성 가능</b>으로 바꿔 두어야 학생들이 로그인 없이 씁니다.</li>
+          <li>회의 중 여는 놀이 · 생활 목표 · 실천내용 · 건의사항 화면 아래에 <b>QR 띄우기</b>와 <b>의견 가져오기</b>가 나타납니다.</li>
+        </ol>
+        <p style="font-size:.85rem;color:var(--ink-2);margin-top:.7rem">
+          패들렛 칸(섹션) 이름에 <b>놀이 · 목표 · 실천 · 건의</b>가 들어가게 나눠 두면, 화면마다 맞는 칸의 글만 가져옵니다.
+          한 패들렛을 매달 다시 써도 됩니다 — 지난 회의 날짜까지 올라온 글은 미리 체크를 풀어 둡니다.</p>
+        <p style="font-size:.85rem;color:var(--ink-2);margin-top:.5rem">
+          <b>앱 링크(claude.ai)</b>에서 열면 <b>의견 가져오기</b>를 누르는 즉시 패들렛 글을 읽어 옵니다.
+          claude.ai 설정 → 커넥터에 <b>Padlet MCP</b>가 연결돼 있어야 하고, 처음 한 번은 허락 창이 뜹니다.
+          내려받은 파일이나 GitHub 주소에서는 복사해서 붙여넣기로 가져옵니다.</p></div>
+
+      <div class="set-block"${s.source!=="gform"?" hidden":""}><h3>구글 설문지</h3>
+        <div class="field" style="margin-bottom:.9rem"><label for="s-glink">설문지 링크 <small>(미리 채워진 링크를 넣으면 화면마다 칸이 골라진 채로 열립니다)</small></label>
+          <input class="inp mono" id="s-glink" value="${esc(s.gformLink||"")}" data-set="gformLink"
+            placeholder="https://docs.google.com/forms/d/e/.../viewform?usp=pp_url&entry.…" inputmode="url" autocomplete="off"></div>
+        <div class="field"><label for="s-gsheet">응답 시트 주소</label>
+          <input class="inp mono" id="s-gsheet" value="${esc(s.gformSheet||"")}" data-set="gformSheet"
+            placeholder="https://docs.google.com/spreadsheets/d/..." inputmode="url" autocomplete="off"></div>
+        <p class="set-warn" id="gsheet-warn"${!s.gformSheet||gformSheetId()?" hidden":""}>
+          이 주소에서 시트를 찾지 못했습니다. 설문지가 아니라 <b>응답 스프레드시트</b>의 주소를 넣어 주세요.</p>
+        <details class="set-guide"${s.gformSheet?"":" open"}><summary>처음 한 번 준비하기 (5분)</summary>
+          <ol>
+            <li>구글 설문지를 만들고, <b>받고 싶은 화면마다 질문을 하나씩</b> 넣습니다(단답형이나 장문형).
+              질문 제목에 아래 낱말이 들어가면 그 화면으로 갑니다.
+              <table class="kwtable">
+                <tr><th>화면</th><th>제목에 넣을 낱말</th><th>예</th></tr>
+                <tr><td>여는 놀이</td><td><b>놀이</b></td><td>여는 놀이 발표하기</td></tr>
+                <tr><td>이번달 반성</td><td><b>반성</b></td><td>이번달 실천내용 반성하기</td></tr>
+                <tr><td>생활 목표 후보</td><td><b>목표</b></td><td>다음달 생활 목표에 대한 내 의견</td></tr>
+                <tr><td>다음달 실천내용</td><td><b>실천</b></td><td>다음달 실천내용 정하기</td></tr>
+                <tr><td>건의사항</td><td><b>건의</b></td><td>건의사항</td></tr>
+              </table>
+              <small>‘반성’이 들어가면 ‘실천’이 함께 있어도 반성 화면으로 갑니다.</small></li>
+            <li>설정 → 응답에서 <b>이메일 주소 수집 안 함</b>, <b>로그인 필요</b>는 끕니다. 학생 이름도 묻지 않습니다.</li>
+            <li>응답 탭 → <b>Sheets에 연결</b> → 새 스프레드시트를 만듭니다.</li>
+            <li>그 시트의 <b>공유</b> → 일반 액세스를 <b>링크가 있는 모든 사용자 · 뷰어</b>로 → 링크 복사 → 위 <b>응답 시트 주소</b>에 붙여넣습니다.</li>
+            <li>설문지 <b>보내기</b> → 링크 아이콘 → 복사 → 위 <b>설문지 링크</b>에 붙여넣습니다.</li>
+          </ol>
+          <p><b>다른 방법</b> — 질문을 두 개만 두고(객관식 「어디에 낼 의견인가요?」 + 장문형 「의견」), 객관식 보기를 아래 글자 그대로 쓸 수도 있습니다.
+            이때 5번에서 <b>⋮ → 미리 채워진 링크 가져오기</b>로 얻은 링크를 넣으면 화면마다 보기가 골라진 채로 열립니다.</p>
+          <div class="labelcopy">
+            <textarea id="gform-labels" rows="5" readonly>${Object.values(GFORM_LABEL).join("\n")}</textarea>
+            <button class="btn btn-sm" data-act="copy-labels">보기 다섯 개 복사</button>
+          </div>
+          <p>응답 시트는 <b>주소를 아는 사람은 누구나 볼 수 있습니다.</b> 학생들은 설문지 링크만 받으므로 시트 주소를 모르지만,
+            이름 · 이메일은 받지 말고 학기가 끝나면 응답을 지워 주세요.
+            앱 링크(claude.ai)에서는 구글 시트를 읽을 수 없어, 이 방식은 내려받은 파일이나 GitHub 주소에서 씁니다.</p>
+        </details></div>
+
       <div class="set-block"><h3>여는 놀이</h3>
         <label style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;cursor:pointer">
           <input type="checkbox" data-set-bool="iceOn"${s.iceOn?" checked":""}
             style="width:1.1rem;height:1.1rem;accent-color:var(--board)">
           <span>회의 시작 전에 여는 놀이 화면 넣기</span></label>
-        <div class="field" style="margin-bottom:.9rem"><label for="s-q">오늘의 질문 · 한 줄에 하나</label>
-          <textarea class="inp" id="s-q" rows="6" data-set-lines="questions">${esc((s.questions||[]).join("\n"))}</textarea></div>
-        <div class="field"><label for="s-qz">초성 퀴즈 · <code>정답|힌트</code> 로 한 줄에 하나</label>
-          <textarea class="inp" id="s-qz" rows="6" data-set-lines="quiz">${esc((s.quiz||[]).join("\n"))}</textarea></div>
-        <p style="font-size:.85rem;color:var(--ink-2);margin-top:.7rem">
-          초성은 정답에서 자동으로 만들어집니다. 따로 적지 않으셔도 됩니다.</p></div>
+        <label style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;cursor:pointer">
+          <input type="checkbox" data-set-bool="iceSound"${s.iceSound?" checked":""}
+            style="width:1.1rem;height:1.1rem;accent-color:var(--board)">
+          <span>놀이 효과음 (뽑기 · 카운트다운 · 정답 소리)</span></label>
+        <p style="font-size:.85rem;color:var(--ink-2);margin-bottom:1rem">
+          놀이는 아홉 가지입니다. 오늘의 질문 · 밸런스 게임 · 화면과 가위바위보 · OX 퀴즈 · 초성 퀴즈 · 사라진 그림 찾기 ·
+          몸으로 말해요 · 텔레파시 · 짝·모둠 정하기. 놀이 중에는 <b>스페이스</b>나 <b>엔터</b>가 주 단추, <b>Esc</b>가 놀이 고르기입니다.</p>
+        <details class="set-guide"><summary>놀이에 쓰는 문제 고치기</summary>
+          <div class="field" style="margin:.8rem 0 .9rem"><label for="s-q">오늘의 질문 · 한 줄에 하나</label>
+            <textarea class="inp" id="s-q" rows="6" data-set-lines="questions">${esc((s.questions||[]).join("\n"))}</textarea></div>
+          <div class="field" style="margin-bottom:.9rem"><label for="s-bal">밸런스 게임 · <code>왼쪽|오른쪽</code> 로 한 줄에 하나</label>
+            <textarea class="inp" id="s-bal" rows="6" data-set-lines="balance">${esc((s.balance||[]).join("\n"))}</textarea></div>
+          <div class="field" style="margin-bottom:.9rem"><label for="s-ox">OX 퀴즈 · <code>문제|O 또는 X|설명</code> 으로 한 줄에 하나 (설명은 없어도 됩니다)</label>
+            <textarea class="inp" id="s-ox" rows="6" data-set-lines="ox">${esc((s.ox||[]).join("\n"))}</textarea></div>
+          <div class="field" style="margin-bottom:.9rem"><label for="s-qz">초성 퀴즈 · <code>정답|힌트</code> 로 한 줄에 하나 — 초성은 정답에서 자동으로 만들어집니다</label>
+            <textarea class="inp" id="s-qz" rows="6" data-set-lines="quiz">${esc((s.quiz||[]).join("\n"))}</textarea></div>
+          <div class="field"><label for="s-tele">텔레파시 주제 · 한 줄에 하나</label>
+            <textarea class="inp" id="s-tele" rows="5" data-set-lines="tele">${esc((s.tele||[]).join("\n"))}</textarea></div>
+        </details></div>
+
+      <div class="set-block"><h3>뽑기 명단</h3>
+        <div class="field"><label for="s-roster">우리 반 이름 <small>(한 줄에 한 명 · 비워 두면 번호로 뽑습니다)</small></label>
+          <textarea class="inp" id="s-roster" rows="5" data-set="roster" placeholder="비워 두면 참석 인원만큼 1번, 2번… 으로 뽑습니다">${esc(s.roster||"")}</textarea></div>
+        <p style="font-size:.85rem;color:var(--ink-2);margin-top:.6rem">
+          명단은 이 컴퓨터의 브라우저에만 저장되고 회의록에는 들어가지 않습니다(아래 백업 글자에는 함께 들어갑니다).
+          번호 뽑기에서 <b>한 명 · 짝 · 모둠</b>을 고를 수 있습니다.</p></div>
 
       <div class="set-block"><h3>교가</h3>
         <div class="field" style="margin-bottom:.9rem"><label for="s-st">제목</label>
@@ -1272,7 +2497,7 @@ function newMeeting(){
     date:todayISO(), scope:last?last.scope:db.settings.scope,
     chair:"", recorders:"", attendance:last?last.attendance:(db.settings.defaultAttendance||20),
     review:{topic:last?last.next.topic:"", promises:last?last.next.promises.slice():[], good:0,mid:0,bad:0},
-    next:{topic:"", promises:[]}, goalVote:[], suggestions:[], teacherWords:"",
+    next:{topic:"", promises:[]}, goalVote:[], iceAnswers:[], reviewNotes:[], suggestions:[], teacherWords:"",
     done:false, updatedAt:Date.now()
   };
   db.meetings.push(m); save();
@@ -1288,6 +2513,8 @@ function setPath(obj,path,val){
 function bump(k,d){
   const m=current(), r=m.review;
   r[k]=Math.max(0,r[k]+d); m.updatedAt=Date.now(); save();
+  /* 학생 의견 탭을 보는 중에 1·2·3을 누르면 손들기 화면으로 돌아가 보여 준다 */
+  if(state.reviewTab==="notes"){ state.reviewTab="vote"; render(); return; }
   const el=document.querySelector(`[data-num="${k}"]`); if(el) el.textContent=r[k];
   const tot=r.good+r.mid+r.bad;
   const meter=$("#meter");
@@ -1323,7 +2550,7 @@ function refreshList(kind){
   const m=current();
   const ul=$(kind==="promise"?"#plist":"#slist");
   const arr=kind==="promise"?m.next.promises:m.suggestions;
-  if(ul){ ul.innerHTML=listItems(arr,kind); ul.className=plistClass(arr.length); }
+  if(ul){ ul.innerHTML=listItems(arr,kind); ul.className=plistClass(arr.length,kind==="promise"); }
   const id=kind==="promise"?"promise":"suggest";
   const rail=railBtn(id);
   if(rail) rail.classList.toggle("filled",stepFilled(m,id));
@@ -1332,16 +2559,22 @@ function refreshList(kind){
 /* 회의를 새로 열 때마다 뽑기와 놀이를 처음 상태로 되돌린다 */
 function startRun(id){
   const qn=(db.settings.questions||[]).length, cn=(db.settings.quiz||[]).length;
-  Object.assign(state,{drawOpen:false, drawUsed:[], drawn:null, goalAdd:false,
-    iceMode:"q", iceShow:false,
-    iceQ:qn?Math.floor(Math.random()*qn):0, iceC:cn?Math.floor(Math.random()*cn):0});
+  iceStop();
+  const bn=(db.settings.balance||[]).length, on=(db.settings.ox||[]).length;
+  const rnd=n=>n?Math.floor(Math.random()*n):0;
+  Object.assign(state,{drawOpen:false, drawUsed:[], drawResult:null, drawMode:"one", goalAdd:false,
+    qrOpen:false, impOpen:false, impItems:null, reviewTab:"vote",
+    iceMode:"menu", iceShow:false, iceFirst:false, iceQ:rnd(qn), iceC:rnd(cn),
+    bal:{i:rnd(bn),a:0,b:0}, rps:{phase:"idle",round:0,hand:0,word:""}, ox:{i:rnd(on),show:false},
+    miss:{phase:"idle",hard:state.miss.hard}, act:{phase:"setup",cat:state.act.cat,sec:state.act.sec},
+    tele:{phase:"idle",i:0,n:3}});
   go("run",{id:id||state.id, step:0});
 }
 
 function nav(d){
   const n=state.step+d;
   if(n<0||n>=steps().length) return;
-  state.step=n; state.drawOpen=false; render();
+  Object.assign(state,{step:n, drawOpen:false, qrOpen:false, impOpen:false, impItems:null}); render();
 }
 
 /* ---------- events ---------- */
@@ -1363,7 +2596,7 @@ document.addEventListener("click",e=>{
     case "exit": go("home",{id:null}); break;
     case "prev": nav(-1); break;
     case "next": nav(1); break;
-    case "jump": state.step=+b.dataset.i; render(); break;
+    case "jump": Object.assign(state,{step:+b.dataset.i, drawOpen:false, qrOpen:false, impOpen:false, impItems:null}); render(); break;
     case "vote": bump(b.dataset.k,+b.dataset.d); break;
     case "toggle": toggleAudio(); break;
     case "ts": {
@@ -1372,30 +2605,98 @@ document.addEventListener("click",e=>{
       save(); render(); toast("글자 크기 "+Math.round(db.settings.textScale*100)+"%");
       break;
     }
-    case "ice-mode": state.iceMode=b.dataset.k; state.iceShow=false; render(); break;
-    case "ice-next": {
-      if((state.iceMode||"q")==="q") state.iceQ=(state.iceQ||0)+1;
-      else { state.iceC=(state.iceC||0)+1; state.iceShow=false; }
-      render(); break;
+    /* ---- 여는 놀이 ---- */
+    case "ice-go": {
+      const k=b.dataset.k; iceStop();
+      if(k==="draw"){ Object.assign(state,{drawOpen:true, drawMode:"pair", drawResult:null}); render(); break; }
+      state.iceMode=k; render(); break;
     }
-    case "ice-show": state.iceShow=!state.iceShow; render(); break;
+    case "ice-menu": iceStop(); state.iceMode="menu"; render(); break;
+    case "ice-next": state.iceQ=(state.iceQ||0)+1; render(); iceBeep(620,.06); break;
+    case "ice-show":                              /* 초성: 정답 보기 → 다음 문제 */
+      if(!state.iceShow){ state.iceShow=true; iceBeep(880,.1); setTimeout(()=>iceBeep(1175,.18),110); }
+      else { state.iceC=(state.iceC||0)+1; state.iceShow=false; state.iceFirst=false; iceBeep(700,.07); }
+      render(); break;
+    case "ice-first": state.iceFirst=true; render(); iceBeep(600,.08); break;
+    case "bal": balBump(b.dataset.k,+b.dataset.d); break;
+    case "bal-next": state.bal={i:state.bal.i+1,a:0,b:0}; render(); iceBeep(620,.06); break;
+    case "rps-go": rpsGo(); break;
+    case "rps-reset": iceStop(); state.rps={phase:"idle",round:0,hand:0,word:""}; render(); break;
+    case "ox-go":
+      if(!state.ox.show){ state.ox.show=true; iceBeep(880,.1); }
+      else { state.ox={i:state.ox.i+1,show:false}; iceBeep(620,.06); }
+      render(); break;
+    case "miss-hard": state.miss.hard=b.dataset.k==="1"; render(); break;
+    case "miss-go": missGo(); break;
+    case "miss-ans": state.miss.phase="answer"; render(); iceBeep(880,.1); setTimeout(()=>iceBeep(1175,.2),110); break;
+    case "act-cat": state.act.cat=b.dataset.k; render(); break;
+    case "act-sec": state.act.sec=+b.dataset.k; render(); break;
+    case "act-start": actStart(); break;
+    case "act-hit": actMark(true); break;
+    case "act-pass": actMark(false); break;
+    case "act-end": actEnd(); break;
+    case "act-setup": state.act.phase="setup"; render(); break;
+    case "tele-topic": {
+      iceStop(); const L=db.settings.tele||[];
+      state.tele.i=L.length?Math.floor(Math.random()*L.length):0; state.tele.phase="topic";
+      render(); iceBeep(660,.08); break;
+    }
+    case "tele-go": teleGo(); break;
+    case "draw-mode": state.drawMode=b.dataset.k; state.drawResult=null; render(); break;
+    case "draw-gk":
+      state.drawGroups=Math.max(2,Math.min(10,(state.drawGroups||4)+(+b.dataset.d)));
+      state.drawResult=null; render(); break;
     case "draw-open": state.drawOpen=true; render(); break;
     case "draw-close": state.drawOpen=false; render(); break;
+    case "qr-open": Object.assign(state,{qrOpen:true, qrFor:steps()[state.step].id}); render(); break;
+    case "qr-close": state.qrOpen=false; render(); break;
+    case "imp-open": {
+      Object.assign(state,{impOpen:true, impFor:steps()[state.step].id, impItems:null,
+        impSrc:null, impErr:"", impBusy:false});
+      render();
+      /* 자동으로 읽을 수 있으면 누르자마자 읽는다(패들렛은 첫 번째에 연결 허락 창이 뜬다).
+         앱 링크에서 구글 설문지를 고른 경우엔 autoImport 가 이유를 띄운다 */
+      if(autoSource()||(useGform()&&inArtifact())) autoImport();
+      else setTimeout(()=>{ const t=$("#imp-text"); if(t) t.focus(); },0);
+      break;
+    }
+    case "imp-auto": autoImport(); break;
+    case "copy-labels": {
+      const ta=$("#gform-labels"), txt=Object.values(GFORM_LABEL).join("\n");
+      const fallback=()=>{ ta.focus(); ta.select(); toast("선택해 두었습니다. Ctrl+C로 복사하세요"); };
+      try{ navigator.clipboard.writeText(txt).then(()=>toast("보기 다섯 개를 복사했습니다"),fallback); }
+      catch(e){ fallback(); }
+      break;
+    }
+    case "imp-close": Object.assign(state,{impOpen:false, impItems:null, impSrc:null, impErr:""}); render(); break;
+    case "imp-back": Object.assign(state,{impItems:null, impSrc:null, impErr:""}); render();
+      setTimeout(()=>{ const t=$("#imp-text"); if(t&&t.offsetParent) t.focus(); },0); break;
+    case "imp-parse": {
+      const have=new Set(importTarget(m,state.impFor));
+      state.impItems=parsePasted($("#imp-text").value)
+        .map(o=>({t:o.t, dup:have.has(o.t), name:o.name, joke:o.joke, on:!have.has(o.t)&&!o.name&&!o.joke}));
+      state.impSrc={auto:false};
+      render(); break;
+    }
+    case "imp-apply": applyImport(); break;
+    case "ice-clear": m.iceAnswers=[]; m.updatedAt=Date.now(); save(); render(); break;
+    case "rv-tab": state.reviewTab=b.dataset.k; render(); break;
+    case "rv-clear": m.reviewNotes=[]; state.reviewTab="vote"; m.updatedAt=Date.now(); save(); render(); break;
     case "draw-pick": pickNumber(); break;
-    case "draw-reset": state.drawUsed=[]; state.drawn=null; render(); toast("번호를 처음부터 다시 뽑습니다"); break;
+    case "draw-reset": state.drawUsed=[]; state.drawResult=null; render(); toast("처음부터 다시 뽑습니다"); break;
     case "draw-setn": {
       const v=Math.max(1,parseInt($("#draw-n").value||"20",10));
       m.attendance=v; m.updatedAt=Date.now(); save(); render(); break;
     }
     case "seek": {
-      const a=getAudio(); if(!a.duration) break;
+      const a=audioEl; if(!a||!isFinite(a.duration)||!a.duration) break;
       const r=b.getBoundingClientRect();
       a.currentTime=Math.min(a.duration,Math.max(0,(e.clientX-r.left)/r.width*a.duration));
       break;
     }
     case "audio-reset": {
       const k=b.dataset.k;
-      idbDel(k).then(()=>{delete userAudio[k]; render(); toast("기본 음원으로 되돌렸습니다");});
+      idbDel(k).then(()=>{ delete userAudio[k]; dropPlayer(k); render(); toast("기본 음원으로 되돌렸습니다"); });
       break;
     }
     case "add": addItem(b.dataset.k); break;
@@ -1405,6 +2706,7 @@ document.addEventListener("click",e=>{
       m.updatedAt=Date.now(); save(); refreshList(k); break;
     }
     case "rm-topic": db.settings.topicBank.splice(+b.dataset.i,1); save(); render(); break;
+    case "goto": { const i=stepIndex(b.dataset.id); if(i>=0){ state.step=i; render(); } break; }
     case "gv": bumpGoal(+b.dataset.i, +b.dataset.d); break;
     case "gv-rm": {
       (m.goalVote||[]).splice(+b.dataset.i,1); m.updatedAt=Date.now(); save(); paintGoal(); break;
@@ -1478,7 +2780,10 @@ document.addEventListener("input",e=>{
       if(rail) rail.classList.toggle("filled",stepFilled(m,id));
     }
   }
-  if(t.dataset.set){ db.settings[t.dataset.set]=t.value; save(); }
+  if(t.dataset.set){ db.settings[t.dataset.set]=t.value; save();
+    /* 설문지 주소를 시트 칸에 잘못 넣는 일이 흔해서 바로 알려 준다 */
+    if(t.dataset.set==="gformSheet"){ const w=$("#gsheet-warn"); if(w) w.hidden=!t.value.trim()||!!gformSheetId(); }
+  }
   if(t.dataset.setNum){ db.settings[t.dataset.setNum]=Math.max(1,parseInt(t.value||"1",10)); save(); }
   if(t.dataset.setLines){
     db.settings[t.dataset.setLines]=t.value.split("\n").map(x=>x.trim()).filter(Boolean);
@@ -1488,14 +2793,23 @@ document.addEventListener("input",e=>{
 
 document.addEventListener("change",e=>{
   const t=e.target;
+  /* 체크 하나 바꿀 때마다 다시 그리면 목록이 맨 위로 튀므로 버튼 글자만 고친다 */
+  if(t.dataset.imp!==undefined&&state.impItems){
+    state.impItems[+t.dataset.imp].on=t.checked;
+    const n=state.impItems.filter(x=>x.on).length, b=$("#imp-apply");
+    if(b){ b.textContent=`선택한 ${n}개 넣기`; b.disabled=!n; }
+    return;
+  }
   if(t.dataset.setBool){ db.settings[t.dataset.setBool]=t.checked; save(); return; }
+  /* 의견 받는 곳을 바꾸면 해당 설정 칸만 보이게 다시 그린다 */
+  if(t.dataset.setRadio){ db.settings[t.dataset.setRadio]=t.value; saveNow(); render(); return; }
   if(t.dataset.audio){
     const k=t.dataset.audio, f=t.files&&t.files[0]; if(!f) return;
     if(f.size>12*1024*1024){ toast("파일이 너무 큽니다 (12MB까지)"); t.value=""; return; }
     const fr=new FileReader();
     fr.onload=()=>{
       idbPut(k,fr.result).then(()=>{
-        userAudio[k]=fr.result; audioKey=null;
+        userAudio[k]=fr.result; dropPlayer(k);
         render(); toast(TRACK_NAME[k]+" 음원을 넣었습니다");
       }).catch(()=>toast("저장하지 못했습니다"));
     };
@@ -1506,16 +2820,33 @@ document.addEventListener("change",e=>{
 
 document.addEventListener("keydown",e=>{
   const t=e.target, typing=/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName);
+  /* 붙여넣기 칸에 글자를 넣던 중이어도 Esc로는 창을 닫을 수 있게 한다 */
+  if(e.key==="Escape"&&(state.qrOpen||state.impOpen)){
+    e.preventDefault(); Object.assign(state,{qrOpen:false, impOpen:false, impItems:null}); render(); return;
+  }
   if(typing){
     if(e.key==="Enter"&&t.dataset.add){ e.preventDefault(); addItem(t.dataset.add); }
     return;
   }
   if(state.view!=="run") return;
+  /* QR이나 가져오기 창이 떠 있으면 화면이 넘어가지 않게 막는다 */
+  if(state.qrOpen||state.impOpen) return;
   /* 번호 뽑기가 떠 있으면 화면이 넘어가지 않게 막는다 */
   if(state.drawOpen){
     if(e.key==="Escape"){ e.preventDefault(); state.drawOpen=false; render(); }
     else if(e.key==="Enter"||e.key===" "||e.key==="r"||e.key==="R"){ e.preventDefault(); pickNumber(); }
     return;
+  }
+  /* 놀이를 하는 중에는 스페이스·엔터가 그 놀이의 주 단추를 누른다(놀이상자와 같게).
+     놀이 도중 화면이 넘어가 버리지 않도록. 화면 넘기기는 화살표로 */
+  if(onIceSlide()&&state.iceMode!=="menu"){
+    if(e.key===" "||e.key==="Enter"){
+      e.preventDefault(); const p=document.querySelector(".ice-primary");
+      if(p&&!p.disabled) p.click(); return;
+    }
+    if(e.key==="Escape"){ e.preventDefault(); iceStop(); state.iceMode="menu"; render(); return; }
+    if(state.iceMode==="act"&&state.act.phase==="play"&&e.key==="ArrowRight"){ e.preventDefault(); actMark(false); return; }
+    if(state.iceMode==="bal"&&(e.key==="1"||e.key==="2")){ e.preventDefault(); balBump(e.key==="1"?"a":"b",e.shiftKey?-1:1); return; }
   }
   if(e.key==="ArrowRight"||e.key==="PageDown"||e.key===" "){ e.preventDefault(); nav(1); }
   else if(e.key==="ArrowLeft"||e.key==="PageUp"){ e.preventDefault(); nav(-1); }
@@ -1535,7 +2866,10 @@ document.addEventListener("keydown",e=>{
 
 load();
 render();
-idbLoadAll().then(()=>{ if(Object.keys(userAudio).length){ audioKey=null; render(); } });
+idbLoadAll().then(()=>{
+  const ks=Object.keys(userAudio);
+  if(ks.length){ ks.forEach(dropPlayer); render(); }
+});
 </script>
 
 </body></html>
