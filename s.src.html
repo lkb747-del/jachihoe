@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>우리 반 의견함</title>
+<style>
+:root{--board:#1F4438;--board-2:#183A2F;--line:rgba(255,255,255,.18);--chalk:#F4F7F2;--chalk-2:#C9D6CC;
+  --gold:#EBC15A;--bad:#FFA9B8;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--board);color:var(--chalk);
+  font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif}
+main{max-width:30rem;margin:0 auto;padding:max(1.2rem,env(safe-area-inset-top)) 1.1rem 2rem;
+  display:flex;flex-direction:column;gap:1rem;word-break:keep-all}
+.eyebrow{margin:0;font-size:.85rem;font-weight:700;letter-spacing:.08em;color:var(--gold)}
+h1{margin:0;font-size:1.5rem;line-height:1.35}
+p{margin:0;line-height:1.55}
+.note{font-size:.88rem;color:var(--chalk-2)}
+textarea,input{width:100%;font:inherit;font-size:1.1rem;color:var(--chalk);background:rgba(0,0,0,.25);
+  border:1px solid var(--line);border-radius:12px;padding:.8rem .9rem}
+textarea{min-height:8.5rem;resize:vertical;line-height:1.5}
+input{text-align:center;letter-spacing:.3em;text-transform:uppercase}
+textarea:focus,input:focus,button:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
+.count{align-self:flex-end;font-size:.82rem;color:var(--chalk-2);margin-top:-.6rem}
+button{font:inherit;font-weight:700;font-size:1.15rem;border:0;border-radius:12px;padding:.9rem 1rem;
+  background:var(--gold);color:#14332A;cursor:pointer;width:100%}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.ghost{background:transparent;color:var(--chalk);border:1px solid var(--line)}
+.done{background:rgba(0,0,0,.2);border:1px solid var(--line);border-radius:14px;padding:1.2rem;text-align:center;
+  display:flex;flex-direction:column;gap:.5rem}
+.done b{font-size:1.35rem}
+.err{color:var(--bad);font-size:.95rem}
+.flash{background:rgba(235,193,90,.15);border:1px solid rgba(235,193,90,.45);border-radius:10px;padding:.55rem .75rem;font-size:.92rem}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"><p class="note">의견함을 여는 중입니다…</p></main>
+<script>
+const FB={projectId:"__FB_PROJECT__", apiKey:"__FB_KEY__", api:"__FB_API__"};
+const code=(new URLSearchParams(location.search).get("r")||"").trim().toUpperCase();
+const base=`${FB.api}/v1/projects/${FB.projectId}/databases/(default)/documents/rooms`;
+const app=document.getElementById("app");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const MAX=100, POLL=15000;
+let room=null, view="", timer=null, lastKind="", sent=0, draft="", busy=false, flash="";
+
+function field(d,k){ const f=d.fields&&d.fields[k]; return f?(f.stringValue??f.booleanValue??f.integerValue??null):null; }
+
+async function fetchRoom(){
+  const r=await fetch(`${base}/${encodeURIComponent(code)}?key=${FB.apiKey}`,{cache:"no-store"});
+  if(r.status===404) return null;
+  if(!r.ok) throw new Error("http "+r.status);
+  const d=await r.json();
+  return {kind:field(d,"kind"), label:field(d,"label")||"의견", ask:field(d,"ask")||"", open:field(d,"open")===true};
+}
+
+function showCode(msg){
+  view="code"; clearInterval(timer);
+  app.innerHTML=`<p class="eyebrow">우리 반 의견함</p><h1>칠판의 코드를 넣어 주세요</h1>
+    ${msg?`<p class="err">${esc(msg)}</p>`:""}
+    <input id="c" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="의견함 코드">
+    <button id="go">들어가기</button>`;
+  const go=()=>{ const v=document.getElementById("c").value.trim().toUpperCase(); if(v) location.search="?r="+encodeURIComponent(v); };
+  document.getElementById("go").onclick=go;
+  document.getElementById("c").onkeydown=e=>{ if(e.key==="Enter") go(); };
+}
+function showClosed(){
+  view="closed";
+  app.innerHTML=`<p class="eyebrow">우리 반 의견함</p><h1>지금은 의견을 받지 않아요</h1>
+    <p class="note">선생님이 의견함을 열면 이 화면이 저절로 바뀝니다.</p>`;
+}
+function showForm(){
+  view="form";
+  app.innerHTML=`<p class="eyebrow">${esc(room.label)}</p>
+    <h1>${esc(room.ask)}</h1>
+    ${flash?`<p class="flash">${esc(flash)}</p>`:""}
+    <textarea id="t" maxlength="${MAX}" placeholder="여기에 적어 주세요" aria-label="내 의견">${esc(draft)}</textarea>
+    <div class="count" id="n">${draft.length} / ${MAX}</div>
+    <p class="err" id="e" hidden></p>
+    <button id="send">보내기</button>
+    <p class="note">이름은 쓰지 않아요. 고운 말로 적어 주세요.${sent?` 지금까지 ${sent}개 보냈어요.`:""}</p>`;
+  flash="";
+  const t=document.getElementById("t"), n=document.getElementById("n");
+  t.oninput=()=>{ draft=t.value; n.textContent=`${t.value.length} / ${MAX}`; };
+  document.getElementById("send").onclick=send;
+}
+function showDone(){
+  view="done";
+  app.innerHTML=`<div class="done"><b>보냈어요!</b><p class="note">칠판을 봐 주세요.</p></div>
+    <button id="more" class="ghost">하나 더 쓰기</button>`;
+  document.getElementById("more").onclick=showForm;
+}
+async function send(){
+  const text=draft.trim(), e=document.getElementById("e"), b=document.getElementById("send");
+  if(busy) return;
+  if(!text){ e.textContent="내용을 적어 주세요."; e.hidden=false; return; }
+  busy=true; b.disabled=true; b.textContent="보내는 중…";
+  try{
+    const r=await fetch(`${base}/${encodeURIComponent(code)}/items?key=${FB.apiKey}`,{
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({fields:{k:{stringValue:room.kind},t:{stringValue:text},at:{integerValue:String(Date.now())}}})
+    });
+    if(r.status===403){
+      busy=false; b.disabled=false; b.textContent="보내기";
+      await tick(true);
+      const er=document.getElementById("e");
+      if(view==="form"&&er){ er.textContent="지금은 보낼 수 없어요. 선생님께 말씀드려 주세요."; er.hidden=false; }
+      return;
+    }
+    if(!r.ok) throw new Error("http "+r.status);
+    draft=""; sent++; showDone();
+    setTimeout(()=>{ busy=false; },1500);
+    return;
+  }catch(err){
+    e.textContent="보내지 못했어요. 인터넷을 확인하고 다시 눌러 주세요."; e.hidden=false;
+  }
+  busy=false; if(document.getElementById("send")){ b.disabled=false; b.textContent="보내기"; }
+}
+/* 칠판 화면이 바뀌면 이 질문도 따라 바뀐다. 쓰던 글은 지우지 않는다 */
+async function tick(first){
+  if(document.hidden&&first!==true) return;
+  let next;
+  try{ next=await fetchRoom(); }
+  catch(e){ if(first===true) app.innerHTML=`<p class="err">연결하지 못했어요. 인터넷을 확인해 주세요.</p>`; return; }
+  if(next===null){ showCode("의견함이 닫혔거나 코드가 다릅니다."); return; }
+  const changed=!room||next.kind!==room.kind||next.ask!==room.ask;
+  room=next;
+  if(!room.open){ if(view!=="closed") showClosed(); return; }
+  if(view==="closed"||view===""){ lastKind=room.kind; showForm(); return; }
+  if(changed&&view==="form"){ flash="칠판의 질문이 바뀌었어요."; showForm(); }
+  if(changed&&view==="done") showForm();
+  lastKind=room.kind;
+}
+(async()=>{
+  if(!code){ showCode(""); return; }
+  room=null; await tick(true);
+  timer=setInterval(()=>tick(),POLL);
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden) tick(); });
+})();
+</script>
+</body>
+</html>

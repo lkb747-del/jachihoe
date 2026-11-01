@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(code) {
+      return request.auth != null
+        && get(/databases/$(database)/documents/rooms/$(code)).data.owner == request.auth.uid;
+    }
+
+    // 의견함 하나 = 회의 하나. 코드를 아는 사람만 열 수 있고, 목록은 아무도 못 본다.
+    match /rooms/{code} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if request.auth != null
+        && code.size() == 6
+        && request.resource.data.owner == request.auth.uid
+        && request.resource.data.keys().hasOnly(['owner', 'kind', 'label', 'ask', 'open', 'at']);
+      allow update: if request.auth != null
+        && resource.data.owner == request.auth.uid
+        && request.resource.data.owner == resource.data.owner
+        && request.resource.data.keys().hasOnly(['owner', 'kind', 'label', 'ask', 'open', 'at']);
+      allow delete: if request.auth != null && resource.data.owner == request.auth.uid;
+
+      // 학생은 쓰기만 한다. 다른 친구 글은 읽을 수 없고, 읽고 지우는 것은 선생님뿐이다.
+      match /items/{id} {
+        allow create: if get(/databases/$(database)/documents/rooms/$(code)).data.open == true
+          && request.resource.data.keys().hasOnly(['k', 't', 'at'])
+          && request.resource.data.k in ['ice', 'review', 'goal', 'promise', 'suggest']
+          && request.resource.data.t is string
+          && request.resource.data.t.size() >= 1
+          && request.resource.data.t.size() <= 100
+          && request.resource.data.at is int;
+        allow get, list, delete: if isOwner(code);
+        allow update: if false;
+      }
+    }
+  }
+}
